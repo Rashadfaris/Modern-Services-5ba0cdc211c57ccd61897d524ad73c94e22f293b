@@ -18,10 +18,16 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Path aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "frontend/src/components/**/*.ts", "frontend/src/components/**/*.tsx", "frontend/src/pages/**/*.ts", "frontend/src/pages/**/*.tsx", "lib/**/*.ts", "firebase/**/*.ts", "App.tsx"],
-  "exclude": ["node_modules", "dist", "vite.config.ts", "**/*.config.ts", "functions", "functions/**/*", "modern_services"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "dist"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
 

@@ -1,0 +1,20 @@
+{
+  "name": "modern-services-5ba0cdc211c57ccd61897d524ad73c94e22f293b",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rashadfaris/Modern-Services-5ba0cdc211c57ccd61897d524ad73c94e22f293b.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rashadfaris/Modern-Services-5ba0cdc211c57ccd61897d524ad73c94e22f293b/issues"
+  },
+  "homepage": "https://github.com/Rashadfaris/Modern-Services-5ba0cdc211c57ccd61897d524ad73c94e22f293b#readme",
+  "description": ""
+}

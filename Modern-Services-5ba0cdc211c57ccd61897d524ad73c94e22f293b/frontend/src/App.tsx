@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Header } from './frontend/src/components/Header';
-import { Footer } from './frontend/src/components/Footer';
-import { HomePage } from './frontend/src/pages/HomePage';
-import { AboutPage } from './frontend/src/pages/AboutPage';
-import { ServicesPage } from './frontend/src/pages/ServicesPage';
-import { TestimonialsPage } from './frontend/src/pages/TestimonialsPage';
-import { ContactPage } from './frontend/src/pages/ContactPage';
-import { AdminDashboard } from './frontend/src/pages/AdminDashboard';
-import { AdminLogin } from './frontend/src/components/AdminLogin';
+import { Header } from './components/Header';
+import { Footer } from './components/Footer';
+import { HomePage } from './pages/HomePage';
+import { AboutPage } from './pages/AboutPage';
+import { ServicesPage } from './pages/ServicesPage';
+import { TestimonialsPage } from './pages/TestimonialsPage';
+import { ContactPage } from './pages/ContactPage';
+import { BlogPage } from './pages/BlogPage';
+import { AdminDashboard } from './pages/AdminDashboard';
+import { AdminLogin } from './components/AdminLogin';
 import { onAuthChange, isAdmin, getCurrentUser } from './lib/auth';
 
 export default function App() {
@@ -71,6 +72,8 @@ export default function App() {
         return <ServicesPage onNavigate={handleNavigate} />;
       case 'testimonials':
         return <TestimonialsPage onNavigate={handleNavigate} />;
+      case 'blog':
+        return <BlogPage onNavigate={handleNavigate} />;
       case 'contact':
         return <ContactPage onNavigate={handleNavigate} />;
       default:
@@ -102,3 +105,4 @@ export default function App() {
     </div>
   );
 }
+
