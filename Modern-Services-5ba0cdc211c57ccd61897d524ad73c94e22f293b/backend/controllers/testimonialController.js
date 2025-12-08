@@ -26,10 +26,30 @@ const sendTestimonialNotification = async (testimonial) => {
     }
 
     const resend = getResendClient();
-    const adminEmail = process.env.CONTACT_EMAIL || 'info@modernservices.org.uk';
     const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
+    
+    // Admin email - in Resend test mode, you can only send to your account email
+    let adminEmail = process.env.CONTACT_EMAIL || 'info@modernservices.org.uk';
+    
+    // Only override recipient if using Resend test domain (@resend.dev)
+    // If using verified domain, always use CONTACT_EMAIL
+    if (fromEmail.includes('@resend.dev')) {
+      // In test mode, use RESEND_TEST_EMAIL if set, otherwise keep CONTACT_EMAIL
+      if (process.env.RESEND_TEST_EMAIL) {
+        adminEmail = process.env.RESEND_TEST_EMAIL;
+        console.log('📧 Using Resend test mode - sending testimonial notification to:', adminEmail);
+      } else {
+        console.log('⚠️ Using Resend test domain but RESEND_TEST_EMAIL not set. Emails may fail if not sent to account owner email.');
+      }
+    }
+    
     // Admin dashboard URL - defaults to localhost for development, can be overridden via env variable
     const adminDashboardUrl = process.env.ADMIN_DASHBOARD_URL || 'http://localhost:5173/admin';
+    
+    console.log('📧 Testimonial notification email config:', {
+      from: fromEmail,
+      to: adminEmail
+    });
 
     const htmlContent = `
       <!DOCTYPE html>
@@ -112,6 +132,7 @@ const sendTestimonialNotification = async (testimonial) => {
     `;
 
     // Send email using Resend
+    console.log('📤 Attempting to send testimonial notification via Resend...');
     const { data, error } = await resend.emails.send({
       from: `"Modern Services" <${fromEmail}>`,
       to: adminEmail,
@@ -121,14 +142,32 @@ const sendTestimonialNotification = async (testimonial) => {
     });
 
     if (error) {
-      console.error('❌ Resend API error:', error);
+      console.error('❌ Resend API error details:', {
+        statusCode: error.statusCode,
+        name: error.name,
+        message: error.message,
+        from: fromEmail,
+        to: adminEmail
+      });
+      
+      // Check for specific Resend test mode error
+      if (error.message && error.message.includes('can only send testing emails to your own email address')) {
+        const accountEmail = error.message.match(/\(([^)]+)\)/)?.[1] || 'your account email';
+        console.error(`⚠️ Resend test mode: Can only send to ${accountEmail}. Set RESEND_TEST_EMAIL=${accountEmail} in Railway.`);
+        // Don't throw - just log so testimonial creation doesn't fail
+        return;
+      }
+      
       throw new Error(error.message || 'Failed to send email');
     }
 
-    console.log('✅ Testimonial notification email sent successfully');
+    console.log('✅ Testimonial notification email sent successfully:', data);
   } catch (error) {
     // Don't throw error - just log it so testimonial creation doesn't fail
-    console.error('❌ Error sending testimonial notification email:', error);
+    console.error('❌ Error sending testimonial notification email:', {
+      message: error.message,
+      stack: error.stack
+    });
   }
 };
 

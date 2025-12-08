@@ -52,12 +52,32 @@ exports.sendContactEmail = async (req, res) => {
       });
     }
 
-    // Recipient email (from your contact page)
-    const recipientEmail = process.env.CONTACT_EMAIL || 'info@modernservices.org.uk';
-    
     // From email - should be from a verified domain in Resend
     // You can use onboarding@resend.dev for testing, or your verified domain
     const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
+    
+    // Recipient email (from your contact page)
+    // In Resend test mode, you can only send to your account email
+    // Use RESEND_TEST_EMAIL for testing, or CONTACT_EMAIL for production
+    let recipientEmail = process.env.CONTACT_EMAIL || 'info@modernservices.org.uk';
+    
+    // Only override recipient if using Resend test domain (@resend.dev)
+    // If using verified domain, always use CONTACT_EMAIL
+    if (fromEmail.includes('@resend.dev')) {
+      // In test mode, use RESEND_TEST_EMAIL if set, otherwise keep CONTACT_EMAIL
+      if (process.env.RESEND_TEST_EMAIL) {
+        recipientEmail = process.env.RESEND_TEST_EMAIL;
+        console.log('📧 Using Resend test mode - sending to:', recipientEmail);
+      } else {
+        console.log('⚠️ Using Resend test domain but RESEND_TEST_EMAIL not set. Emails may fail if not sent to account owner email.');
+      }
+    }
+    
+    console.log('📧 Email configuration:', {
+      from: fromEmail,
+      to: recipientEmail,
+      replyTo: email
+    });
 
     // Email HTML content
     const htmlContent = `
@@ -131,6 +151,7 @@ exports.sendContactEmail = async (req, res) => {
     `;
 
     // Send email using Resend
+    console.log('📤 Attempting to send email via Resend...');
     const { data, error } = await resend.emails.send({
       from: fromEmail,
       to: recipientEmail,
@@ -141,24 +162,50 @@ exports.sendContactEmail = async (req, res) => {
     });
 
     if (error) {
-      console.error('Resend API error:', error);
+      console.error('❌ Resend API error details:', {
+        statusCode: error.statusCode,
+        name: error.name,
+        message: error.message,
+        from: fromEmail,
+        to: recipientEmail
+      });
+      
+      // Check for specific Resend test mode error
+      if (error.message && error.message.includes('can only send testing emails to your own email address')) {
+        const accountEmail = error.message.match(/\(([^)]+)\)/)?.[1] || 'your account email';
+        throw new Error(`RESEND_TEST_MODE: In test mode, emails can only be sent to ${accountEmail}. Please set RESEND_TEST_EMAIL=${accountEmail} in Railway, or verify your domain at resend.com/domains`);
+      }
+      
       throw new Error(error.message || 'Failed to send email');
     }
+    
+    console.log('✅ Email sent successfully:', data);
 
     res.status(200).json({
       success: true,
       message: 'Your message has been sent successfully. We will get back to you soon!'
     });
   } catch (error) {
-    console.error('Error sending contact email:', error);
+    console.error('❌ Error sending contact email:', {
+      message: error.message,
+      stack: error.stack
+    });
     
     // Provide more specific error messages
     let errorMessage = 'Failed to send message. Please try again later or contact us directly at info@modernservices.org.uk';
     
-    if (error.message.includes('API key')) {
+    if (error.message.includes('RESEND_TEST_MODE')) {
+      // Extract the account email from the error message
+      const accountEmailMatch = error.message.match(/to ([^\s]+)/);
+      const accountEmail = accountEmailMatch ? accountEmailMatch[1] : 'your account email';
+      errorMessage = `Email service is in test mode. Please set RESEND_TEST_EMAIL=${accountEmail} in Railway environment variables, or verify your domain at resend.com/domains to send to any email address.`;
+      console.error('⚠️ Resend test mode detected. Set RESEND_TEST_EMAIL in Railway.');
+    } else if (error.message.includes('API key')) {
       errorMessage = 'Email service authentication failed. Please contact us directly at info@modernservices.org.uk';
     } else if (error.message.includes('not configured')) {
       errorMessage = 'Email service is not configured. Please contact us directly at info@modernservices.org.uk';
+    } else if (error.message.includes('domain is not verified')) {
+      errorMessage = 'Email domain not verified. Please verify your domain at resend.com/domains or use RESEND_TEST_EMAIL for testing.';
     }
     
     res.status(500).json({
