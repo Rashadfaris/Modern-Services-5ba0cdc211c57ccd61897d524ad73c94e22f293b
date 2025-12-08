@@ -12,35 +12,37 @@ const blogRoutes = require('./routes/blogRoutes');
 const app = express();
 
 // Middleware
-// Enable CORS for React frontend (adjust origin in production)
-const allowedOrigins = process.env.FRONTEND_URL 
-  ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
-  : ['http://localhost:5173', 'http://localhost:5174'];
+// Allowed origins
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'https://modernservices.org.uk',
+  'http://modernservices.org.uk'
+];
 
-// Add production domain if in production mode
-if (process.env.NODE_ENV === 'production') {
-  allowedOrigins.push('https://modernservices.org.uk', 'http://modernservices.org.uk');
-}
-
-app.use(cors({
+// CORS configuration
+const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    
-    // Check if origin is in allowed list
-    if (allowedOrigins.indexOf(origin) !== -1) {
+
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      // In development, allow any localhost port
-      if (process.env.NODE_ENV !== 'production' && origin.startsWith('http://localhost:')) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
+      console.warn(`Blocked by CORS: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
     }
   },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
-}));
+};
+
+// Apply CORS middleware
+app.use(cors(corsOptions));
+
+// Handle preflight OPTIONS requests for all routes
+app.options('*', cors(corsOptions));
 
 // Parse JSON request bodies
 app.use(express.json());
