@@ -14,8 +14,13 @@ const app = express();
 // Middleware
 // Enable CORS for React frontend (adjust origin in production)
 const allowedOrigins = process.env.FRONTEND_URL 
-  ? process.env.FRONTEND_URL.split(',') 
+  ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
   : ['http://localhost:5173', 'http://localhost:5174'];
+
+// Add production domain if in production mode
+if (process.env.NODE_ENV === 'production') {
+  allowedOrigins.push('https://modernservices.org.uk', 'http://modernservices.org.uk');
+}
 
 app.use(cors({
   origin: function (origin, callback) {
