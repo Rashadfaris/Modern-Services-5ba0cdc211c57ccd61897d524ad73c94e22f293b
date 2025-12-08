@@ -2,14 +2,25 @@ const nodemailer = require('nodemailer');
 
 // Create reusable transporter
 const getTransporter = () => {
+  const smtpUser = process.env.SMTP_USER || process.env.EMAIL_USER;
+  const smtpPass = process.env.SMTP_PASSWORD || process.env.EMAIL_PASSWORD;
+
+  // Validate SMTP credentials
+  if (!smtpUser || !smtpPass) {
+    throw new Error('SMTP credentials are not configured. Please set SMTP_USER and SMTP_PASSWORD environment variables.');
+  }
+
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.hostinger.com',
     port: parseInt(process.env.SMTP_PORT || '465'),
     secure: true, // Use SSL/TLS for port 465
     auth: {
-      user: process.env.SMTP_USER || process.env.EMAIL_USER,
-      pass: process.env.SMTP_PASSWORD || process.env.EMAIL_PASSWORD,
+      user: smtpUser,
+      pass: smtpPass,
     },
+    connectionTimeout: 10000, // 10 seconds to establish connection
+    socketTimeout: 10000, // 10 seconds for socket operations
+    greetingTimeout: 10000, // 10 seconds for greeting
   });
 };
 
@@ -32,15 +43,34 @@ exports.sendContactEmail = async (req, res) => {
       });
     }
 
+    // Validate SMTP configuration before attempting to send
+    const smtpUser = process.env.SMTP_USER || process.env.EMAIL_USER;
+    if (!smtpUser) {
+      console.error('SMTP_USER is not configured');
+      return res.status(500).json({
+        success: false,
+        message: 'Email service is not configured. Please contact us directly at info@modernservices.org.uk'
+      });
+    }
+
     // Email configuration using Hostinger SMTP
-    const transporter = getTransporter();
+    let transporter;
+    try {
+      transporter = getTransporter();
+    } catch (error) {
+      console.error('Failed to create email transporter:', error.message);
+      return res.status(500).json({
+        success: false,
+        message: 'Email service is not configured. Please contact us directly at info@modernservices.org.uk'
+      });
+    }
 
     // Recipient email (from your contact page)
     const recipientEmail = process.env.CONTACT_EMAIL || 'info@modernservices.org.uk';
 
     // Email content
     const mailOptions = {
-      from: process.env.SMTP_USER || process.env.EMAIL_USER,
+      from: smtpUser,
       to: recipientEmail,
       replyTo: email, // So you can reply directly to the sender
       subject: `A Message from ${name}`,
@@ -113,8 +143,17 @@ exports.sendContactEmail = async (req, res) => {
       `
     };
 
-    // Send email
-    await transporter.sendMail(mailOptions);
+    // Send email with timeout
+    const sendEmailWithTimeout = (transporter, mailOptions, timeout = 15000) => {
+      return Promise.race([
+        transporter.sendMail(mailOptions),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Email sending timed out after 15 seconds')), timeout)
+        )
+      ]);
+    };
+
+    await sendEmailWithTimeout(transporter, mailOptions);
 
     res.status(200).json({
       success: true,
@@ -123,9 +162,20 @@ exports.sendContactEmail = async (req, res) => {
   } catch (error) {
     console.error('Error sending contact email:', error);
     
+    // Provide more specific error messages
+    let errorMessage = 'Failed to send message. Please try again later or contact us directly at info@modernservices.org.uk';
+    
+    if (error.message.includes('timeout')) {
+      errorMessage = 'Email service is taking too long to respond. Please try again later or contact us directly at info@modernservices.org.uk';
+    } else if (error.message.includes('credentials') || error.message.includes('authentication')) {
+      errorMessage = 'Email service authentication failed. Please contact us directly at info@modernservices.org.uk';
+    } else if (error.message.includes('not configured')) {
+      errorMessage = 'Email service is not configured. Please contact us directly at info@modernservices.org.uk';
+    }
+    
     res.status(500).json({
       success: false,
-      message: 'Failed to send message. Please try again later or contact us directly at info@modernservices.org.uk'
+      message: errorMessage
     });
   }
 };
@@ -149,8 +199,27 @@ exports.sendReplyEmail = async (req, res) => {
       });
     }
 
-    const transporter = getTransporter();
+    // Validate SMTP configuration
     const fromEmail = process.env.SMTP_USER || process.env.EMAIL_USER;
+    if (!fromEmail) {
+      return res.status(500).json({
+        success: false,
+        message: 'Email service is not configured'
+      });
+    }
+
+    let transporter;
+    try {
+      transporter = getTransporter();
+    } catch (error) {
+      console.error('Failed to create email transporter:', error.message);
+      return res.status(500).json({
+        success: false,
+        message: 'Email service is not configured',
+        error: error.message
+      });
+    }
+
     const companyName = 'Modern Services';
     const replySubject = subject || `Re: Your Inquiry - ${companyName}`;
 
@@ -232,8 +301,17 @@ exports.sendReplyEmail = async (req, res) => {
       `
     };
 
-    // Send email
-    await transporter.sendMail(mailOptions);
+    // Send email with timeout
+    const sendEmailWithTimeout = (transporter, mailOptions, timeout = 15000) => {
+      return Promise.race([
+        transporter.sendMail(mailOptions),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Email sending timed out after 15 seconds')), timeout)
+        )
+      ]);
+    };
+
+    await sendEmailWithTimeout(transporter, mailOptions);
 
     res.status(200).json({
       success: true,
@@ -242,9 +320,17 @@ exports.sendReplyEmail = async (req, res) => {
   } catch (error) {
     console.error('Error sending reply email:', error);
     
+    let errorMessage = 'Failed to send reply email. Please try again later.';
+    
+    if (error.message.includes('timeout')) {
+      errorMessage = 'Email service is taking too long to respond. Please try again later.';
+    } else if (error.message.includes('credentials') || error.message.includes('authentication')) {
+      errorMessage = 'Email service authentication failed.';
+    }
+    
     res.status(500).json({
       success: false,
-      message: 'Failed to send reply email. Please try again later.',
+      message: errorMessage,
       error: error.message
     });
   }
