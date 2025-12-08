@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'admin@modernservices.com';
+    }
+    
+    // Testimonials collection
+    match /testimonials/{testimonialId} {
+      // Allow anyone to read approved testimonials
+      allow read: if resource.data.approved == true;
+      
+      // Allow admin to read all testimonials (approved and unapproved)
+      allow read: if isAdmin();
+      
+      // Allow anyone to create testimonials (for submission)
+      allow create: if request.resource.data.keys().hasAll(['name', 'location', 'message', 'approved', 'createdAt'])
+                   && request.resource.data.approved == false;
+      
+      // Allow admin to update (approve) testimonials
+      allow update: if isAdmin() && 
+                     request.resource.data.diff(resource.data).affectedKeys().hasOnly(['approved']);
+      
+      // Allow admin to delete (decline) testimonials
+      allow delete: if isAdmin();
+    }
+  }
+}
+

@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "components/**/*.ts", "components/**/*.tsx", "pages/**/*.ts", "pages/**/*.tsx", "lib/**/*.ts", "firebase/**/*.ts", "App.tsx"],
+  "exclude": ["node_modules", "dist", "vite.config.ts", "**/*.config.ts", "functions", "functions/**/*", "modern_services"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
+
