@@ -1,17 +1,15 @@
 const Testimonial = require('../models/Testimonial');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-// Create reusable transporter for sending emails
-const getTransporter = () => {
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.hostinger.com',
-    port: parseInt(process.env.SMTP_PORT || '465'),
-    secure: true, // Use SSL/TLS for port 465
-    auth: {
-      user: process.env.SMTP_USER || process.env.EMAIL_USER,
-      pass: process.env.SMTP_PASSWORD || process.env.EMAIL_PASSWORD,
-    },
-  });
+// Initialize Resend client
+const getResendClient = () => {
+  const apiKey = process.env.RESEND_API_KEY;
+  
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY is not configured. Please set RESEND_API_KEY environment variable.');
+  }
+  
+  return new Resend(apiKey);
 };
 
 /**
@@ -20,97 +18,113 @@ const getTransporter = () => {
  */
 const sendTestimonialNotification = async (testimonial) => {
   try {
-    const transporter = getTransporter();
+    // Check if Resend is configured
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.warn('⚠️ RESEND_API_KEY not configured - skipping email notification');
+      return;
+    }
+
+    const resend = getResendClient();
     const adminEmail = process.env.CONTACT_EMAIL || 'info@modernservices.org.uk';
-    const fromEmail = process.env.SMTP_USER || process.env.EMAIL_USER;
+    const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
     // Admin dashboard URL - defaults to localhost for development, can be overridden via env variable
     const adminDashboardUrl = process.env.ADMIN_DASHBOARD_URL || 'http://localhost:5173/admin';
 
-    const mailOptions = {
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; }
+            .header { background-color: #0A1A2F; color: white; padding: 20px; text-align: center; }
+            .content { background-color: #f9f9f9; padding: 20px; margin: 20px 0; }
+            .field { margin: 15px 0; }
+            .label { font-weight: bold; color: #0A1A2F; display: block; margin-bottom: 5px; }
+            .value { padding: 10px; background-color: white; border-left: 4px solid #C8A75B; display: block; }
+            .cta-button { display: inline-block; padding: 12px 24px; background-color: #C8A75B; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px; font-weight: bold; }
+            .footer { text-align: center; color: #666; font-size: 12px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h2 style="margin: 0;">New Testimonial Submission</h2>
+            </div>
+            <div class="content">
+              <p style="color: #333; margin-bottom: 20px;">
+                A new testimonial has been submitted and is awaiting your review. Please log in to the admin dashboard to approve or decline it.
+              </p>
+              
+              <div class="field">
+                <div class="label">Name:</div>
+                <div class="value">${testimonial.name}</div>
+              </div>
+              
+              ${testimonial.email ? `
+              <div class="field">
+                <div class="label">Email:</div>
+                <div class="value"><a href="mailto:${testimonial.email}" style="color: #0A1A2F; text-decoration: none;">${testimonial.email}</a></div>
+              </div>
+              ` : ''}
+              
+              ${testimonial.location ? `
+              <div class="field">
+                <div class="label">Location:</div>
+                <div class="value">${testimonial.location}</div>
+              </div>
+              ` : ''}
+              
+              <div class="field">
+                <div class="label">Message:</div>
+                <div class="value" style="white-space: pre-wrap;">${testimonial.message}</div>
+              </div>
+              
+              <div style="margin-top: 30px; text-align: center;">
+                <a href="${adminDashboardUrl}" class="cta-button">Review in Admin Dashboard</a>
+              </div>
+            </div>
+            <div class="footer">
+              <p>Submitted at: ${new Date(testimonial.createdAt).toLocaleString('en-GB', { timeZone: 'Europe/London' })}</p>
+              <p>This is an automated notification from Modern Services.</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+
+    const textContent = `
+      New Testimonial Submission
+      
+      A new testimonial has been submitted and is awaiting your review.
+      
+      Name: ${testimonial.name}
+      ${testimonial.email ? `Email: ${testimonial.email}` : ''}
+      ${testimonial.location ? `Location: ${testimonial.location}` : ''}
+      
+      Message:
+      ${testimonial.message}
+      
+      Review in Admin Dashboard: ${adminDashboardUrl}
+      
+      Submitted at: ${new Date(testimonial.createdAt).toLocaleString('en-GB', { timeZone: 'Europe/London' })}
+    `;
+
+    // Send email using Resend
+    const { data, error } = await resend.emails.send({
       from: `"Modern Services" <${fromEmail}>`,
       to: adminEmail,
       subject: `New Testimonial Submission by : ${testimonial.name}`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <style>
-              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
-              .container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; }
-              .header { background-color: #0A1A2F; color: white; padding: 20px; text-align: center; }
-              .content { background-color: #f9f9f9; padding: 20px; margin: 20px 0; }
-              .field { margin: 15px 0; }
-              .label { font-weight: bold; color: #0A1A2F; display: block; margin-bottom: 5px; }
-              .value { padding: 10px; background-color: white; border-left: 4px solid #C8A75B; display: block; }
-              .cta-button { display: inline-block; padding: 12px 24px; background-color: #C8A75B; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px; font-weight: bold; }
-              .footer { text-align: center; color: #666; font-size: 12px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h2 style="margin: 0;">New Testimonial Submission</h2>
-              </div>
-              <div class="content">
-                <p style="color: #333; margin-bottom: 20px;">
-                  A new testimonial has been submitted and is awaiting your review. Please log in to the admin dashboard to approve or decline it.
-                </p>
-                
-                <div class="field">
-                  <div class="label">Name:</div>
-                  <div class="value">${testimonial.name}</div>
-                </div>
-                
-                ${testimonial.email ? `
-                <div class="field">
-                  <div class="label">Email:</div>
-                  <div class="value"><a href="mailto:${testimonial.email}" style="color: #0A1A2F; text-decoration: none;">${testimonial.email}</a></div>
-                </div>
-                ` : ''}
-                
-                ${testimonial.location ? `
-                <div class="field">
-                  <div class="label">Location:</div>
-                  <div class="value">${testimonial.location}</div>
-                </div>
-                ` : ''}
-                
-                <div class="field">
-                  <div class="label">Message:</div>
-                  <div class="value" style="white-space: pre-wrap;">${testimonial.message}</div>
-                </div>
-                
-                <div style="margin-top: 30px; text-align: center;">
-                  <a href="${adminDashboardUrl}" class="cta-button">Review in Admin Dashboard</a>
-                </div>
-              </div>
-              <div class="footer">
-                <p>Submitted at: ${new Date(testimonial.createdAt).toLocaleString('en-GB', { timeZone: 'Europe/London' })}</p>
-                <p>This is an automated notification from Modern Services.</p>
-              </div>
-            </div>
-          </body>
-        </html>
-      `,
-      text: `
-        New Testimonial Submission
-        
-        A new testimonial has been submitted and is awaiting your review.
-        
-        Name: ${testimonial.name}
-        ${testimonial.email ? `Email: ${testimonial.email}` : ''}
-        ${testimonial.location ? `Location: ${testimonial.location}` : ''}
-        
-        Message:
-        ${testimonial.message}
-        
-        Review in Admin Dashboard: ${adminDashboardUrl}
-        
-        Submitted at: ${new Date(testimonial.createdAt).toLocaleString('en-GB', { timeZone: 'Europe/London' })}
-      `
-    };
+      html: htmlContent,
+      text: textContent,
+    });
 
-    await transporter.sendMail(mailOptions);
+    if (error) {
+      console.error('❌ Resend API error:', error);
+      throw new Error(error.message || 'Failed to send email');
+    }
+
     console.log('✅ Testimonial notification email sent successfully');
   } catch (error) {
     // Don't throw error - just log it so testimonial creation doesn't fail
