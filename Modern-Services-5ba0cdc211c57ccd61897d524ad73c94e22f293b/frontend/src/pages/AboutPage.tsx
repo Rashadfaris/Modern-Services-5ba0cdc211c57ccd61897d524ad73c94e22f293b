@@ -4,12 +4,67 @@ import { Heart, Eye, Users, Lightbulb, Award, Target, Shield, BarChart, UserChec
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { Button } from '../components/ui/button';
 import { FadeIn } from '../components/FadeIn';
+import { usePageContent } from '../hooks/usePageContent';
+import { getSiteSettings, SiteSettings } from '../lib/api';
+import { useEffect, useState } from 'react';
 
 interface AboutPageProps {
   onNavigate: (page: string) => void;
 }
 
 export function AboutPage({ onNavigate }: AboutPageProps) {
+  const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
+  const { pageContent } = usePageContent('about');
+  
+  // Load site settings
+  useEffect(() => {
+    getSiteSettings().then(setSiteSettings).catch(() => null);
+  }, []);
+  
+  // Default content (fallback if API content not available)
+  const defaultContent = {
+    hero: {
+      title: "About Modern Services",
+      description: "A decade of excellence in property management and accounting services"
+    },
+    story: {
+      title: "Our Story",
+          paragraphs: [
+            `Founded over ${siteSettings?.yearsOfExperience || '10+'} years ago, Modern Services was born from a simple vision: to provide international property investors with the same level of care and attention they would give their own investments. What started as a small property management firm has grown into a comprehensive service provider, trusted by investors across the globe.`,
+        "Throughout our decade-long journey, we have successfully managed over fifty properties across England, ranging from luxury apartments in London to charming countryside homes. Our success is built on an unwavering commitment to our clients' prosperity and the communities we serve.",
+        "Today, Modern Services stands as a trusted leader in property management, combining time-honoured values of integrity and service with modern technology and financial expertise. We don't just manage properties — we build long-term partnerships and deliver real value to our clients every single day."
+      ]
+    },
+    values: {
+      title: "Our Core Values",
+      description: "These principles guide every decision we make and every service we provide."
+    },
+    whyChoose: {
+      title: "Why Choose Modern Services?",
+      description: "We offer a unique combination of expertise, technology, and personalized service that sets us apart."
+    },
+    mission: {
+      title: "Our Mission",
+      content: "To empower international property investors with exceptional management services that maximize returns, ensure compliance, and provide complete peace of mind. We strive to be the most trusted partner for property investment in England."
+    },
+    vision: {
+      title: "Our Vision",
+      content: "To be recognized as the leading property management company for international investors in England, known for our integrity, innovation, and unwavering commitment to client success and community enhancement."
+    },
+    stats: {
+      years: "10+",
+      properties: "50+",
+      satisfaction: "98%",
+      support: "24/7"
+    },
+    cta: {
+      title: "Ready to Partner With Us?",
+      description: "Let's discuss how we can help you achieve your property investment goals in England."
+    }
+  };
+
+  // Use API content if available, otherwise use defaults
+  const content = pageContent?.content || defaultContent;
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -21,9 +76,9 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="relative z-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-white mb-4">About Modern Services</h1>
+          <h1 className="text-white mb-4">{content.hero?.title || defaultContent.hero.title}</h1>
           <p className="text-xl text-gray-200">
-            A decade of excellence in property management and accounting services
+            {content.hero?.description || defaultContent.hero.description}
           </p>
         </div>
       </section>
@@ -34,16 +89,12 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
           <FadeIn>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-[#0A1A2F] mb-6">Our Story</h2>
-              <p className="text-gray-700 mb-4 leading-relaxed">
-                Founded over 10 years ago, Modern Services was born from a simple vision: to provide international property investors with the same level of care and attention they would give their own investments. What started as a small property management firm has grown into a comprehensive service provider, trusted by investors across the globe.
-              </p>
-              <p className="text-gray-700 mb-4 leading-relaxed">
-                Throughout our decade-long journey, we have successfully managed over fifty properties across England, ranging from luxury apartments in London to charming countryside homes. Our success is built on an unwavering commitment to our clients' prosperity and the communities we serve.
-              </p>
-              <p className="text-gray-700 mb-6 leading-relaxed">
-                Today, Modern Services stands as a trusted leader in property management, combining time-honoured values of integrity and service with modern technology and financial expertise. We don't just manage properties — we build long-term partnerships and deliver real value to our clients every single day.
-              </p>
+              <h2 className="text-[#0A1A2F] mb-6">{content.story?.title || defaultContent.story.title}</h2>
+              {(content.story?.paragraphs || defaultContent.story.paragraphs).map((paragraph: string, index: number) => (
+                <p key={index} className="text-gray-700 mb-4 leading-relaxed">
+                  {paragraph}
+                </p>
+              ))}
             </div>
             <div className="relative h-[500px] rounded-lg overflow-hidden shadow-xl">
               <ImageWithFallback
@@ -62,9 +113,9 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-12">
-            <h2 className="text-[#0A1A2F] mb-4">Our Core Values</h2>
+            <h2 className="text-[#0A1A2F] mb-4">{content.values?.title || defaultContent.values.title}</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              These principles guide every decision we make and every service we provide.
+              {content.values?.description || defaultContent.values.description}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
@@ -103,9 +154,9 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-12">
-            <h2 className="text-[#0A1A2F] mb-4">Why Choose Modern Services?</h2>
+            <h2 className="text-[#0A1A2F] mb-4">{content.whyChoose?.title || defaultContent.whyChoose.title}</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              We offer a unique combination of expertise, technology, and personalized service that sets us apart.
+              {content.whyChoose?.description || defaultContent.whyChoose.description}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -153,18 +204,18 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
               <div className="w-16 h-16 bg-[#C8A75B] rounded-full flex items-center justify-center mb-6">
                 <Target size={32} className="text-white" />
               </div>
-              <h3 className="text-white mb-4">Our Mission</h3>
+              <h3 className="text-white mb-4">{content.mission?.title || defaultContent.mission.title}</h3>
               <p className="text-gray-300 leading-relaxed">
-                To empower international property investors with exceptional management services that maximize returns, ensure compliance, and provide complete peace of mind. We strive to be the most trusted partner for property investment in England.
+                {content.mission?.content || defaultContent.mission.content}
               </p>
             </div>
             <div className="bg-white/5 p-8 rounded-lg">
               <div className="w-16 h-16 bg-[#C8A75B] rounded-full flex items-center justify-center mb-6">
                 <Eye size={32} className="text-white" />
               </div>
-              <h3 className="text-white mb-4">Our Vision</h3>
+              <h3 className="text-white mb-4">{content.vision?.title || defaultContent.vision.title}</h3>
               <p className="text-gray-300 leading-relaxed">
-                To be recognized as the leading property management company for international investors in England, known for our integrity, innovation, and unwavering commitment to client success and community enhancement.
+                {content.vision?.content || defaultContent.vision.content}
               </p>
             </div>
             </div>
@@ -178,19 +229,19 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
           <FadeIn>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-              <div className="text-5xl text-white mb-2">10+</div>
+              <div className="text-5xl text-white mb-2">{siteSettings?.yearsOfExperience || content.stats?.years || defaultContent.stats.years}</div>
               <div className="text-white/90">Years Experience</div>
             </div>
             <div>
-              <div className="text-5xl text-white mb-2">50+</div>
+              <div className="text-5xl text-white mb-2">{siteSettings?.propertiesManaged || content.stats?.properties || defaultContent.stats.properties}</div>
               <div className="text-white/90">Properties Managed</div>
             </div>
             <div>
-              <div className="text-5xl text-white mb-2">98%</div>
+              <div className="text-5xl text-white mb-2">{siteSettings?.clientSatisfaction || content.stats?.satisfaction || defaultContent.stats.satisfaction}</div>
               <div className="text-white/90">Client Satisfaction</div>
             </div>
             <div>
-              <div className="text-5xl text-white mb-2">24/7</div>
+              <div className="text-5xl text-white mb-2">{content.stats?.support || defaultContent.stats.support}</div>
               <div className="text-white/90">Support Available</div>
             </div>
             </div>
@@ -202,9 +253,9 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
       <section className="py-20 bg-white">
         <FadeIn>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-[#0A1A2F] mb-6">Ready to Partner With Us?</h2>
+          <h2 className="text-[#0A1A2F] mb-6">{content.cta?.title || defaultContent.cta.title}</h2>
           <p className="text-gray-600 text-lg mb-8">
-            Let's discuss how we can help you achieve your property investment goals in England.
+            {content.cta?.description || defaultContent.cta.description}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button onClick={() => onNavigate('contact')}>

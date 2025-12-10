@@ -8,15 +8,17 @@ import {
   declineTestimonial,
   Testimonial 
 } from '../lib/api';
-import { LogOut, CheckCircle, XCircle, Clock, User, MapPin, MessageSquare, BookOpen } from 'lucide-react';
+import { LogOut, CheckCircle, XCircle, Clock, User, MapPin, MessageSquare, BookOpen, FileText, Settings } from 'lucide-react';
 import { FadeIn } from '../components/FadeIn';
 import { BlogManagement } from '../components/BlogManagement';
+import { PageManagement } from '../components/PageManagement';
+import { SiteSettingsManagement } from '../components/SiteSettingsManagement';
 
 interface AdminDashboardProps {
   onLogout: () => void;
 }
 
-type TabType = 'testimonials' | 'blogs';
+type TabType = 'testimonials' | 'blogs' | 'pages' | 'settings';
 
 export function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [activeTab, setActiveTab] = useState<TabType>('testimonials');
@@ -26,28 +28,39 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if user is admin
-    const user = getCurrentUser();
-    if (!user || !isAdmin(user)) {
-      onLogout();
-      return;
-    }
+    // Check if user is admin with a small delay to ensure localStorage is read
+    const checkAuth = () => {
+      const user = getCurrentUser();
+      if (!user || !isAdmin(user)) {
+        // Only logout if we're sure the user is not authenticated
+        // Give it a moment for localStorage to be available
+        setTimeout(() => {
+          const retryUser = getCurrentUser();
+          if (!retryUser || !isAdmin(retryUser)) {
+            onLogout();
+          }
+        }, 100);
+        return;
+      }
 
-    // Initial load
-    loadTestimonials();
-    
-    // Set up real-time listener (updates instantly when testimonials change)
-    const unsubscribe = subscribeToUnapprovedTestimonials((testimonials) => {
-      console.log('🔄 Real-time update:', testimonials.length, 'testimonials');
-      setTestimonials(testimonials);
-      setLoading(false);
-      setError(null);
-    });
-    
-    // Cleanup on unmount
-    return () => {
-      unsubscribe();
+      // Initial load
+      loadTestimonials();
+      
+      // Set up real-time listener (updates instantly when testimonials change)
+      const unsubscribe = subscribeToUnapprovedTestimonials((testimonials) => {
+        console.log('🔄 Real-time update:', testimonials.length, 'testimonials');
+        setTestimonials(testimonials);
+        setLoading(false);
+        setError(null);
+      });
+      
+      // Cleanup on unmount
+      return () => {
+        unsubscribe();
+      };
     };
+
+    checkAuth();
   }, []);
 
   const loadTestimonials = async () => {
@@ -178,6 +191,32 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 <span>Blog Posts</span>
               </div>
             </button>
+            <button
+              onClick={() => setActiveTab('pages')}
+              className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors ${
+                activeTab === 'pages'
+                  ? 'border-[#C8A75B] text-[#C8A75B]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <FileText size={18} />
+                <span>Page Management</span>
+              </div>
+            </button>
+            <button
+              onClick={() => setActiveTab('settings')}
+              className={`px-6 py-4 font-medium text-sm border-b-2 transition-colors ${
+                activeTab === 'settings'
+                  ? 'border-[#C8A75B] text-[#C8A75B]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Settings size={18} />
+                <span>Site Settings</span>
+              </div>
+            </button>
           </div>
         </div>
       </div>
@@ -185,6 +224,10 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
       {/* Content */}
       {activeTab === 'blogs' ? (
         <BlogManagement onLogout={handleLogout} />
+      ) : activeTab === 'pages' ? (
+        <PageManagement onLogout={handleLogout} />
+      ) : activeTab === 'settings' ? (
+        <SiteSettingsManagement onLogout={handleLogout} />
       ) : (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <FadeIn>

@@ -4,12 +4,53 @@ import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { FadeIn } from '../components/FadeIn';
 import { Phone, Mail, MapPin, Clock, Send, MessageCircle, FileText } from 'lucide-react';
 import { sendContactMessage } from '../lib/api';
+import { usePageContent } from '../hooks/usePageContent';
 
 interface ContactPageProps {
   onNavigate: (page: string) => void;
 }
 
 export function ContactPage({ onNavigate }: ContactPageProps) {
+  const { pageContent } = usePageContent('contact');
+  
+  // Default content (fallback if API content not available)
+  const defaultContent = {
+    hero: {
+      title: "Get In Touch",
+      description: "Let's discuss how we can help you achieve your property investment goals"
+    },
+    form: {
+      title: "Send Us a Message",
+      description: "Fill out the form below and our team will get back to you within 24 hours."
+    },
+    contactInfo: {
+      title: "Contact Information",
+      description: "Reach out to us through any of the following channels. We're here to help!",
+      phone: "+44 20 8058 7635",
+      email: "info@modernservices.org.uk",
+      companyReg: "Company Registration No: OC407556",
+      hours: {
+        weekdays: "Monday - Friday: 9:00 AM - 6:00 PM GMT",
+        saturday: "Saturday: 10:00 AM - 2:00 PM GMT",
+        sunday: "Sunday: Closed"
+      }
+    },
+    visit: {
+      title: "Visit Our Office",
+      description: "Located in Harrow, we welcome visits by appointment"
+    },
+    faq: {
+      title: "Have Questions?",
+      description: "Here are some quick answers to common questions. For more detailed information, please contact us directly."
+    },
+    cta: {
+      title: "Ready to Get Started?",
+      description: "Join hundreds of satisfied international investors who trust Modern Services with their UK property investments."
+    }
+  };
+
+  // Use API content if available, otherwise use defaults
+  const content = pageContent?.content || defaultContent;
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -66,9 +107,9 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="relative z-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-white mb-4">Get In Touch</h1>
+          <h1 className="text-white mb-4">{content.hero?.title || defaultContent.hero.title}</h1>
           <p className="text-xl text-gray-200">
-            Let's discuss how we can help you achieve your property investment goals
+            {content.hero?.description || defaultContent.hero.description}
           </p>
         </div>
       </section>
@@ -80,9 +121,9 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div>
-              <h2 className="text-[#0A1A2F] mb-6">Send Us a Message</h2>
+              <h2 className="text-[#0A1A2F] mb-6">{content.form?.title || defaultContent.form.title}</h2>
               <p className="text-gray-600 mb-8">
-                Fill out the form below and our team will get back to you within 24 hours.
+                {content.form?.description || defaultContent.form.description}
               </p>
 
               {formSubmitted ? (
@@ -172,9 +213,9 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
 
             {/* Contact Information */}
             <div>
-              <h2 className="text-[#0A1A2F] mb-6">Contact Information</h2>
+              <h2 className="text-[#0A1A2F] mb-6">{content.contactInfo?.title || defaultContent.contactInfo.title}</h2>
               <p className="text-gray-600 mb-8">
-                Reach out to us through any of the following channels. We're here to help!
+                {content.contactInfo?.description || defaultContent.contactInfo.description}
               </p>
 
               <div className="space-y-6 mb-12">
@@ -185,7 +226,7 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
                   </div>
                   <div>
                     <h4 className="text-[#0A1A2F] mb-2">Phone</h4>
-                    <p className="text-gray-600">+44 20 8058 7635</p>
+                    <p className="text-gray-600">{content.contactInfo?.phone || defaultContent.contactInfo.phone}</p>
                     <p className="text-sm text-gray-500 mt-1">International rates may apply</p>
                   </div>
                 </div>
@@ -197,7 +238,7 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
                   </div>
                   <div>
                     <h4 className="text-[#0A1A2F] mb-2">Email</h4>
-                    <p className="text-gray-600">info@modernservices.org.uk</p>
+                    <p className="text-gray-600">{content.contactInfo?.email || defaultContent.contactInfo.email}</p>
                     <p className="text-sm text-gray-500 mt-1">We respond within 24 hours</p>
                   </div>
                 </div>
@@ -209,7 +250,7 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
                   </div>
                   <div>
                     <h4 className="text-[#0A1A2F] mb-2">Company Registration</h4>
-                    <p className="text-gray-600">Company Registration No: OC407556 </p>
+                    <p className="text-gray-600">{content.contactInfo?.companyReg || defaultContent.contactInfo.companyReg}</p>
                   </div>
                 </div>
 
@@ -220,9 +261,9 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
                   </div>
                   <div>
                     <h4 className="text-[#0A1A2F] mb-2">Operating Hours</h4>
-                    <p className="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM GMT</p>
-                    <p className="text-gray-600">Saturday: 10:00 AM - 2:00 PM GMT</p>
-                    <p className="text-gray-600">Sunday: Closed</p>
+                    <p className="text-gray-600">{content.contactInfo?.hours?.weekdays || defaultContent.contactInfo.hours.weekdays}</p>
+                    <p className="text-gray-600">{content.contactInfo?.hours?.saturday || defaultContent.contactInfo.hours.saturday}</p>
+                    <p className="text-gray-600">{content.contactInfo?.hours?.sunday || defaultContent.contactInfo.hours.sunday}</p>
                     <p className="text-sm text-[#C8A75B] mt-1">24/7 Emergency Support Available</p>
                   </div>
                 </div>
@@ -257,9 +298,9 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-12">
-              <h2 className="text-[#0A1A2F] mb-4">Visit Our Office</h2>
+              <h2 className="text-[#0A1A2F] mb-4">{content.visit?.title || defaultContent.visit.title}</h2>
               <p className="text-gray-600">
-                Located in Harrow, we welcome visits by appointment
+                {content.visit?.description || defaultContent.visit.description}
               </p>
             </div>
             
@@ -297,9 +338,9 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-12">
-            <h2 className="text-[#0A1A2F] mb-4">Have Questions?</h2>
+            <h2 className="text-[#0A1A2F] mb-4">{content.faq?.title || defaultContent.faq.title}</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Here are some quick answers to common questions. For more detailed information, please contact us directly.
+              {content.faq?.description || defaultContent.faq.description}
             </p>
           </div>
 
@@ -333,9 +374,9 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
       <section className="py-20 bg-[#0A1A2F]">
         <FadeIn>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-white mb-6">Ready to Get Started?</h2>
+          <h2 className="text-white mb-6">{content.cta?.title || defaultContent.cta.title}</h2>
           <p className="text-gray-300 text-lg mb-8">
-            Join hundreds of satisfied international investors who trust Modern Services with their UK property investments.
+            {content.cta?.description || defaultContent.cta.description}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button onClick={() => onNavigate('services')} className="bg-[#C8A75B] text-white hover:bg-[#B8964A]">

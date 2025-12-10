@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '../components/ui/button';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { FadeIn } from '../components/FadeIn';
+import { usePageContent } from '../hooks/usePageContent';
 import { 
   Building2, 
   Users, 
@@ -28,6 +29,30 @@ interface ServicesPageProps {
 
 export function ServicesPage({ onNavigate }: ServicesPageProps) {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const { pageContent } = usePageContent('services');
+  
+  // Default content (fallback if API content not available)
+  const defaultContent = {
+    hero: {
+      title: "Our Services",
+      description: "Comprehensive property management and accounting solutions for international investors"
+    },
+    propertyManagement: {
+      title: "Comprehensive Property Management",
+      description: "Full-service property management designed specifically for international investors. We handle every aspect of your property investment, allowing you to enjoy passive income with complete peace of mind."
+    },
+    accounting: {
+      title: "Accounting Services",
+      description: "Professional accounting and financial services to keep your property business compliant and profitable."
+    },
+    cta: {
+      title: "Let's Discuss Your Property Needs",
+      description: "Schedule a free consultation to learn how our services can benefit your property investment."
+    }
+  };
+
+  // Use API content if available, otherwise use defaults
+  const content = pageContent?.content || defaultContent;
 
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? null : section);
@@ -44,9 +69,9 @@ export function ServicesPage({ onNavigate }: ServicesPageProps) {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="relative z-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-white mb-4">Our Services</h1>
+          <h1 className="text-white mb-4">{content.hero?.title || defaultContent.hero.title}</h1>
           <p className="text-xl text-gray-200">
-            Comprehensive property management and accounting solutions for international investors
+            {content.hero?.description || defaultContent.hero.description}
           </p>
         </div>
       </section>
@@ -62,9 +87,9 @@ export function ServicesPage({ onNavigate }: ServicesPageProps) {
                   <div className="w-20 h-20 bg-[#C8A75B] rounded-full flex items-center justify-center mx-auto mb-6">
                     <Building2 size={40} className="text-white" />
                   </div>
-                  <h2 className="text-[#0A1A2F] mb-4">Comprehensive Property Management</h2>
+                  <h2 className="text-[#0A1A2F] mb-4">{content.propertyManagement?.title || defaultContent.propertyManagement.title}</h2>
                   <p className="text-gray-600 max-w-3xl mx-auto text-lg">
-                    Full-service property management designed specifically for international investors. We handle every aspect of your property investment, allowing you to enjoy passive income with complete peace of mind.
+                    {content.propertyManagement?.description || defaultContent.propertyManagement.description}
                   </p>
                 </div>
 
@@ -469,9 +494,9 @@ export function ServicesPage({ onNavigate }: ServicesPageProps) {
                   <div className="w-20 h-20 bg-[#0A1A2F] rounded-full flex items-center justify-center mx-auto mb-6">
                     <Calculator size={40} className="text-[#C8A75B]" />
                   </div>
-                  <h2 className="text-[#0A1A2F] mb-4">Accounting Services</h2>
+                  <h2 className="text-[#0A1A2F] mb-4">{content.accounting?.title || defaultContent.accounting.title}</h2>
                   <p className="text-gray-600 max-w-3xl mx-auto text-lg">
-                    Professional accounting and financial services to keep your property business compliant and profitable.
+                    {content.accounting?.description || defaultContent.accounting.description}
                   </p>
                 </div>
 
@@ -613,9 +638,9 @@ export function ServicesPage({ onNavigate }: ServicesPageProps) {
       <section className="py-20 bg-white">
         <FadeIn>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-[#0A1A2F] mb-6">Let's Discuss Your Property Needs</h2>
+          <h2 className="text-[#0A1A2F] mb-6">{content.cta?.title || defaultContent.cta.title}</h2>
           <p className="text-gray-600 text-lg mb-8">
-            Schedule a free consultation to learn how our services can benefit your property investment.
+            {content.cta?.description || defaultContent.cta.description}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button onClick={() => onNavigate('contact')} className="bg-[#C8A75B] text-white hover:bg-[#B8964A]">

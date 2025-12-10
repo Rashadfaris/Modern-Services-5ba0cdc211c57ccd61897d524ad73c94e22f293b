@@ -420,3 +420,210 @@ export async function deleteBlog(blogId: string): Promise<void> {
     throw error;
   }
 }
+
+// ==================== PAGE MANAGEMENT API FUNCTIONS ====================
+
+export interface Page {
+  id?: string;
+  slug: 'home' | 'about' | 'services' | 'contact';
+  title: string;
+  content: any; // Flexible JSON object - structure varies by page
+  meta?: {
+    description?: string;
+    keywords?: string;
+  };
+  createdAt: Date | string;
+  updatedAt?: Date | string;
+}
+
+/**
+ * Get all pages (admin only)
+ * Returns all pages for management
+ */
+export async function getAllPages(): Promise<Page[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pages`);
+    const pages = await handleResponse<Page[]>(response);
+    
+    return pages.map((p: any) => ({
+      id: p.id,
+      slug: p.slug,
+      title: p.title,
+      content: p.content,
+      meta: p.meta,
+      createdAt: p.createdAt ? new Date(p.createdAt) : new Date(),
+      updatedAt: p.updatedAt ? new Date(p.updatedAt) : undefined,
+    }));
+  } catch (error) {
+    console.error('Error fetching pages:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get a single page by slug
+ * Used by frontend pages to load content dynamically
+ */
+export async function getPageBySlug(slug: 'home' | 'about' | 'services' | 'contact'): Promise<Page> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pages/${slug}`);
+    const page = await handleResponse<Page>(response);
+    
+    return {
+      id: page.id,
+      slug: page.slug,
+      title: page.title,
+      content: page.content,
+      meta: page.meta,
+      createdAt: page.createdAt ? new Date(page.createdAt) : new Date(),
+      updatedAt: page.updatedAt ? new Date(page.updatedAt) : undefined,
+    };
+  } catch (error) {
+    console.error('Error fetching page:', error);
+    throw error;
+  }
+}
+
+/**
+ * Create a new page (admin only)
+ */
+export async function createPage(
+  slug: 'home' | 'about' | 'services' | 'contact',
+  title: string,
+  content: any,
+  meta?: { description?: string; keywords?: string }
+): Promise<Page> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pages`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        slug,
+        title,
+        content,
+        meta,
+      }),
+    });
+
+    const result = await handleResponse<Page>(response);
+    return {
+      ...result,
+      createdAt: result.createdAt ? new Date(result.createdAt) : new Date(),
+    };
+  } catch (error) {
+    console.error('Error creating page:', error);
+    throw error;
+  }
+}
+
+/**
+ * Update a page (admin only)
+ */
+export async function updatePage(
+  slug: 'home' | 'about' | 'services' | 'contact',
+  updates: {
+    title?: string;
+    content?: any;
+    meta?: { description?: string; keywords?: string };
+  }
+): Promise<Page> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pages/${slug}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updates),
+    });
+
+    const result = await handleResponse<Page>(response);
+    return {
+      ...result,
+      createdAt: result.createdAt ? new Date(result.createdAt) : new Date(),
+      updatedAt: result.updatedAt ? new Date(result.updatedAt) : undefined,
+    };
+  } catch (error) {
+    console.error('Error updating page:', error);
+    throw error;
+  }
+}
+
+/**
+ * Delete a page (admin only)
+ */
+export async function deletePage(slug: 'home' | 'about' | 'services' | 'contact'): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/pages/${slug}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    await handleResponse(response);
+  } catch (error) {
+    console.error('Error deleting page:', error);
+    throw error;
+  }
+}
+
+// ==================== SITE SETTINGS API FUNCTIONS ====================
+
+export interface SiteSettings {
+  id?: string;
+  yearsOfExperience: string;
+  happyClients: string;
+  clientSatisfaction: string;
+  propertiesManaged: string;
+  companyFoundedYear: number;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+}
+
+/**
+ * Get site settings
+ */
+export async function getSiteSettings(): Promise<SiteSettings> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/site-settings`);
+    const settings = await handleResponse<SiteSettings>(response);
+    
+    return {
+      ...settings,
+      createdAt: settings.createdAt ? new Date(settings.createdAt) : undefined,
+      updatedAt: settings.updatedAt ? new Date(settings.updatedAt) : undefined,
+    };
+  } catch (error) {
+    console.error('Error fetching site settings:', error);
+    throw error;
+  }
+}
+
+/**
+ * Update site settings (admin only)
+ */
+export async function updateSiteSettings(
+  updates: Partial<Pick<SiteSettings, 'yearsOfExperience' | 'happyClients' | 'clientSatisfaction' | 'propertiesManaged' | 'companyFoundedYear'>>
+): Promise<SiteSettings> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/site-settings`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updates),
+    });
+
+    const result = await handleResponse<SiteSettings>(response);
+    return {
+      ...result,
+      createdAt: result.createdAt ? new Date(result.createdAt) : undefined,
+      updatedAt: result.updatedAt ? new Date(result.updatedAt) : undefined,
+    };
+  } catch (error) {
+    console.error('Error updating site settings:', error);
+    throw error;
+  }
+}

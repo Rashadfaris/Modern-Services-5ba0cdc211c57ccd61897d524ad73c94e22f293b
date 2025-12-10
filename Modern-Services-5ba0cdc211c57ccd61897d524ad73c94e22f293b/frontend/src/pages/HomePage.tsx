@@ -6,6 +6,8 @@ import { Shield, TrendingUp, Clock, FileCheck, Building2, Users, Wallet, Wrench 
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { FadeIn } from '../components/FadeIn';
 import { useState, useEffect } from 'react';
+import { usePageContent } from '../hooks/usePageContent';
+import { getSiteSettings, SiteSettings } from '../lib/api';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
@@ -13,6 +15,50 @@ interface HomePageProps {
 
 export function HomePage({ onNavigate }: HomePageProps) {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
+  const { pageContent } = usePageContent('home');
+  
+  // Load site settings
+  useEffect(() => {
+    getSiteSettings().then(setSiteSettings).catch(() => null);
+  }, []);
+  
+  // Default content (fallback if API content not available)
+  const defaultContent = {
+    hero: {
+      mainTitle: "Modern Services",
+      subtitle: "Your Trusted Partner for Property Management in England",
+      description: "Seamless, profitable, and stress-free property solutions tailored for international investors.",
+      ctaPrimary: "Get a Free Consultation",
+      ctaSecondary: "Explore Our Services"
+    },
+    about: {
+      title: "About Modern Services",
+      description1: "For over 10+ years, Modern Services has empowered international investors with exceptional property management across England. We enhance both your investments and the communities we manage.",
+      description2: "Our comprehensive approach combines expert property management with integrated accounting services, ensuring your investments are professionally managed, fully compliant, and optimized for maximum returns."
+    },
+    benefits: {
+      title: "Why International Investors Choose Us",
+      description: "We provide comprehensive solutions that protect and grow your property investments in England."
+    },
+    services: {
+      title: "Our Core Services",
+      description: "Comprehensive property and financial management solutions tailored for international investors."
+    },
+    testimonials: {
+      title: "What Our Clients Say",
+      description: "Trusted by international investors worldwide"
+    },
+    cta: {
+      title: "Ready to Optimize Your Property Investment?",
+      description: "Get a free consultation with our property management experts today.",
+      ctaPrimary: "Schedule Consultation",
+      ctaSecondary: "Learn More"
+    }
+  };
+
+  // Use API content if available, otherwise use defaults
+  const content = pageContent?.content || defaultContent;
 
   const testimonials = [
     {
@@ -61,18 +107,18 @@ export function HomePage({ onNavigate }: HomePageProps) {
         />
         <div className="relative z-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-white mb-4 sm:mb-6">
-            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold block mb-2 sm:mb-3">Modern Services</span>
-            <span className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-semibold block px-1 sm:px-2 leading-snug sm:leading-tight">Your Trusted Partner for Property Management in England</span>
+            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold block mb-2 sm:mb-3">{content.hero?.mainTitle || defaultContent.hero.mainTitle}</span>
+            <span className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-semibold block px-1 sm:px-2 leading-snug sm:leading-tight">{content.hero?.subtitle || defaultContent.hero.subtitle}</span>
           </h1>
           <p className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-gray-200 mb-6 sm:mb-8 leading-relaxed px-2 sm:px-4">
-            Seamless, profitable, and stress-free property solutions tailored for international investors.
+            {content.hero?.description || defaultContent.hero.description}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-2">
             <Button onClick={() => onNavigate('contact')} className="w-full sm:w-auto text-sm sm:text-base bg-[#C8A75B] text-white hover:bg-[#B8964A]">
-              Get a Free Consultation
+              {content.hero?.ctaPrimary || defaultContent.hero.ctaPrimary}
             </Button>
             <Button variant="outline" className="bg-white/10 border-white text-white hover:bg-white hover:text-[#0A1A2F] w-full sm:w-auto text-sm sm:text-base" onClick={() => onNavigate('services')}>
-              Explore Our Services
+              {content.hero?.ctaSecondary || defaultContent.hero.ctaSecondary}
             </Button>
           </div>
         </div>
@@ -84,12 +130,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
           <FadeIn>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
             <div className="text-center lg:text-left">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl text-[#0A1A2F] mb-4 sm:mb-6">About Modern Services</h2>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl text-[#0A1A2F] mb-4 sm:mb-6">{content.about?.title || defaultContent.about.title}</h2>
               <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6 leading-relaxed">
-                For over 10 years, Modern Services has empowered international investors with exceptional property management across England. We enhance both your investments and the communities we manage.
+                {content.about?.description1 || `For over ${siteSettings?.yearsOfExperience || '10+'} years, Modern Services has empowered international investors with exceptional property management across England. We enhance both your investments and the communities we manage.`}
               </p>
               <p className="text-sm sm:text-base text-gray-700 mb-6 sm:mb-8 leading-relaxed">
-                Our comprehensive approach combines expert property management with integrated accounting services, ensuring your investments are professionally managed, fully compliant, and optimized for maximum returns.
+                {content.about?.description2 || defaultContent.about.description2}
               </p>
               <Button onClick={() => onNavigate('about')} className="w-full sm:w-auto">
                 Learn More About Us
@@ -112,9 +158,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl text-[#0A1A2F] mb-3 sm:mb-4">Why International Investors Choose Us</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl text-[#0A1A2F] mb-3 sm:mb-4">{content.benefits?.title || defaultContent.benefits.title}</h2>
             <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-2">
-              We provide comprehensive solutions that protect and grow your property investments in England.
+              {content.benefits?.description || defaultContent.benefits.description}
             </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
@@ -148,9 +194,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl text-[#0A1A2F] mb-3 sm:mb-4">Our Core Services</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl text-[#0A1A2F] mb-3 sm:mb-4">{content.services?.title || defaultContent.services.title}</h2>
             <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-2">
-              Comprehensive property and financial management solutions tailored for international investors.
+              {content.services?.description || defaultContent.services.description}
             </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
@@ -197,9 +243,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl text-white mb-3 sm:mb-4">What Our Clients Say</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl text-white mb-3 sm:mb-4">{content.testimonials?.title || defaultContent.testimonials.title}</h2>
             <p className="text-sm sm:text-base text-gray-300 px-2">
-              Trusted by international investors worldwide
+              {content.testimonials?.description || defaultContent.testimonials.description}
             </p>
             </div>
             <div className="relative">
@@ -234,16 +280,16 @@ export function HomePage({ onNavigate }: HomePageProps) {
       <section className="py-12 sm:py-16 md:py-20 bg-[#C8A75B]">
         <FadeIn>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white mb-4 sm:mb-6 px-2">Ready to Optimize Your Property Investment?</h2>
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white mb-4 sm:mb-6 px-2">{content.cta?.title || defaultContent.cta.title}</h2>
           <p className="text-sm sm:text-base md:text-lg text-white/90 mb-6 sm:mb-8 px-2">
-            Get a free consultation with our property management experts today.
+            {content.cta?.description || defaultContent.cta.description}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-2">
             <Button variant="secondary" className="bg-white text-[#0A1A2F] hover:bg-gray-100 w-full sm:w-auto" onClick={() => onNavigate('contact')}>
-              Schedule Consultation
+              {content.cta?.ctaPrimary || defaultContent.cta.ctaPrimary}
             </Button>
             <Button variant="outline" className="bg-white/10 border-white text-white hover:bg-white hover:text-[#0A1A2F] w-full sm:w-auto" onClick={() => onNavigate('services')}>
-              Learn More
+              {content.cta?.ctaSecondary || defaultContent.cta.ctaSecondary}
             </Button>
           </div>
           </div>

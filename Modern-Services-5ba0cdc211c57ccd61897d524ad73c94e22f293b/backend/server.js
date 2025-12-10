@@ -7,6 +7,8 @@ require('dotenv').config();
 const testimonialRoutes = require('./routes/testimonialRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const blogRoutes = require('./routes/blogRoutes');
+const pageRoutes = require('./routes/pageRoutes');
+const siteSettingsRoutes = require('./routes/siteSettingsRoutes');
 
 // Initialize Express app
 const app = express();
@@ -76,6 +78,16 @@ mongoose.connect(MONGO_URI, {
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/blogs', blogRoutes);
+app.use('/api/pages', pageRoutes);
+app.use('/api/site-settings', siteSettingsRoutes);
+
+// Log registered routes
+console.log('✅ Routes registered:');
+console.log('   - /api/testimonials');
+console.log('   - /api/contact');
+console.log('   - /api/blogs');
+console.log('   - /api/pages');
+console.log('   - /api/site-settings');
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -97,6 +109,8 @@ app.get('/', (req, res) => {
       approved: '/api/testimonials/approved',
       contact: '/api/contact',
       blogs: '/api/blogs',
+      pages: '/api/pages',
+      siteSettings: '/api/site-settings',
       health: '/api/health'
     }
   });

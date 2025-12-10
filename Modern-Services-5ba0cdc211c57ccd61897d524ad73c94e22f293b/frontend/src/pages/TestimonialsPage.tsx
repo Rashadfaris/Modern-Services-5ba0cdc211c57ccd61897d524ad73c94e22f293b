@@ -4,8 +4,7 @@ import { Button } from '../components/ui/button';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { FadeIn } from '../components/FadeIn';
 import { Star, Quote, Send, CheckCircle } from 'lucide-react';
-import { submitTestimonial, getApprovedTestimonials, Testimonial } from '../lib/api';
-import { getClientCountFormatted } from '../lib/clientCount';
+import { submitTestimonial, getApprovedTestimonials, Testimonial, getSiteSettings, SiteSettings } from '../lib/api';
 
 interface TestimonialsPageProps {
   onNavigate: (page: string) => void;
@@ -16,6 +15,7 @@ export function TestimonialsPage({ onNavigate }: TestimonialsPageProps) {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     location: '',
@@ -74,21 +74,25 @@ export function TestimonialsPage({ onNavigate }: TestimonialsPageProps) {
     }
   ];
 
-  // Fetch approved testimonials from Firestore
+  // Fetch approved testimonials and site settings
   useEffect(() => {
-    const fetchTestimonials = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const approved = await getApprovedTestimonials();
+        const [approved, settings] = await Promise.all([
+          getApprovedTestimonials(),
+          getSiteSettings().catch(() => null) // Fallback if settings don't exist
+        ]);
         setFirestoreTestimonials(approved);
+        setSiteSettings(settings);
       } catch (error) {
-        console.error('Error fetching testimonials:', error);
+        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTestimonials();
+    fetchData();
   }, []);
 
   // Handle form submission
@@ -170,11 +174,11 @@ export function TestimonialsPage({ onNavigate }: TestimonialsPageProps) {
               <div className="text-white text-sm">Client Satisfaction</div>
             </div>
             <div>
-              <div className="text-4xl text-white mb-2">{getClientCountFormatted()}</div>
+              <div className="text-4xl text-white mb-2">{siteSettings?.happyClients || '56+'}</div>
               <div className="text-white text-sm">Happy Clients</div>
             </div>
             <div>
-              <div className="text-4xl text-white mb-2">10+</div>
+              <div className="text-4xl text-white mb-2">{siteSettings?.yearsOfExperience || '10+'}</div>
               <div className="text-white text-sm">Years of Trust</div>
             </div>
           </div>
