@@ -12,10 +12,10 @@ import { Plus, Edit, Trash2, Eye, EyeOff, X, Save, Calendar, FileText } from 'lu
 import { FadeIn } from './FadeIn';
 
 interface BlogManagementProps {
-  onLogout: () => void;
+  onLogout?: () => void;
 }
 
-export function BlogManagement({ onLogout }: BlogManagementProps) {
+export function BlogManagement({ onLogout: _onLogout }: BlogManagementProps) {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<string | null>(null);

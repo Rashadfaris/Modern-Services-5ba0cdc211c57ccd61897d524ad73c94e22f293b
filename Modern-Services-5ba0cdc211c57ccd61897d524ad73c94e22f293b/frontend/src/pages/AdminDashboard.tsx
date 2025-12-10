@@ -8,7 +8,7 @@ import {
   declineTestimonial,
   Testimonial 
 } from '../lib/api';
-import { LogOut, CheckCircle, XCircle, Clock, User, MapPin, MessageSquare, FileText, BookOpen } from 'lucide-react';
+import { LogOut, CheckCircle, XCircle, Clock, User, MapPin, MessageSquare, BookOpen } from 'lucide-react';
 import { FadeIn } from '../components/FadeIn';
 import { BlogManagement } from '../components/BlogManagement';
 

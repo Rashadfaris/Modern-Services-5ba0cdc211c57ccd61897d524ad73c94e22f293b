@@ -17,7 +17,8 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'https://modernservices.org.uk',
-  'http://modernservices.org.uk'
+  'http://modernservices.org.uk',
+  'https://www.modernservices.org.uk'
 ];
 
 // CORS configuration

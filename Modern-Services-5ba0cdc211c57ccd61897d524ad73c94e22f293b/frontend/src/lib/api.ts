@@ -143,7 +143,7 @@ export function subscribeToUnapprovedTestimonials(
   callback: (testimonials: Testimonial[]) => void
 ): () => void {
   let isActive = true;
-  let intervalId: NodeJS.Timeout | null = null;
+  let intervalId: number | null = null;
 
   const fetchTestimonials = async () => {
     if (!isActive) return;

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '../components/ui/button';
 import { FadeIn } from '../components/FadeIn';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
-import { Calendar, ArrowRight, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import { Calendar, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface BlogPageProps {
   onNavigate: (page: string) => void;
@@ -14,7 +14,6 @@ interface BlogPost {
   category: string;
   date: string;
   content: string;
-  source: string;
 }
 
 export function BlogPage({ onNavigate }: BlogPageProps) {
@@ -38,110 +37,21 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
   };
 
   const blogPosts: BlogPost[] = [
-    {
-      id: '1',
-      title: 'IHT raid threatens family farms',
-      category: 'Tax',
-      date: '8th December 2025',
-      content: `Labour's proposed inheritance tax (IHT) changes could significantly impact family farms, according to an independent report by Baroness Batters, former president of the National Farmers' Union (NFU). The report, expected to be published soon, highlights that a 20% tax on inherited agricultural assets over £1m from April 2026 will pressure farmers. While the Government claims the measures target tax avoidance, farming groups argue that removing the agricultural exemption from IHT discourages investment. Rachel Reeves, the Chancellor, announced a minor concession for married farmers, but the NFU has warned that it is insufficient. A Department for Environment, Food and Rural Affairs spokesman said the review "acknowledges recent changes to inheritance tax in the farming sector," adding: "Its focus, and Baroness Batters's recommendations, are on supporting farming profitability." The spokesperson noted that tax policy "falls outside the scope of the review."`,
-      source: 'The Daily Telegraph'
-    },
-    {
-      id: '2',
-      title: 'Venues face higher tax bills',
-      category: 'Leisure & Hospitality',
-      date: '8th December 2025',
-      content: `Concert venues like London's O2 are facing significant property tax increases, with rateable values rising by up to 300%. According to tax firm Ryan, this could lead to ticket prices more than doubling within three years. The O2's tax bill is expected to rise by nearly £2m by 2026/27. Other venues, including Co-op Live in Manchester and Ovo Arena Wembley, are also experiencing substantial tax hikes. Ryan said the increases "will have a direct impact on ticket prices for fans." Jon Collins, chief executive of Live Music Industry Venues and Entertainment, warned that some live music venues would face closure, warning that the policy "will unfairly penalise all 23 UK arenas."`,
-      source: 'The Daily Telegraph, The I'
-    },
-    {
-      id: '3',
-      title: 'Pubs face £160m tax increase',
-      category: 'Leisure & Hospitality',
-      date: '8th December 2025',
-      content: `Pub leaders have accused Chancellor Rachel Reeves of misleading the industry regarding business rates reform. In a letter signed by over 80 executives, they claimed the sector faces an additional £160m tax burden, contradicting promises of relief. The British Beer and Pub Association says community pubs could see a 63% increase in their business rates, while other sectors face much lower hikes. The letter criticises the Government's failure to balance the tax burden and calls for a more substantial discount than the proposed 5p in the pound.`,
-      source: 'The Times'
-    },
-    {
-      id: '4',
-      title: 'Ministers urged to close £2bn tax loophole',
-      category: 'Tax',
-      date: '8th December 2025',
-      content: `Ministers are being urged to address a £2bn tax loophole that allows UK banks and specialist lenders to avoid corporation tax on payouts to motor finance scandal victims. Currently, non-bank entities can deduct compensation payments from profits. While banks lost the right to do so in 2015, those due to pay redress as part of the car loan compensation scheme could exploit the rule as their motor finance arms are considered non-bank entities. This loophole could cost the Treasury £2bn over the next two years, according to the Office for Budget Responsibility.`,
-      source: 'The Guardian'
-    },
-    {
-      id: '5',
-      title: "Windfall tax costing jobs, Ineos' Gilvary warns",
-      category: 'Tax',
-      date: '8th December 2025',
-      content: `Brian Gilvary, chairman of Ineos Energy, has warned that Britain's energy security, jobs and investment are at risk because the Government has opted to maintain a 38% levy on North Sea oil and gas profits, pushing the total tax rate to 78%. He argued that the policy is driven by "ideology without logic" and is causing an investment exodus, threatening thousands of skilled jobs and reducing tax revenue, which has already halved since 2022. With North Sea output forecast to fall sharply by 2030, Mr Gilvary said the windfall tax is accelerating decline and shifting production, jobs and taxes overseas.`,
-      source: 'The Times'
-    },
-    {
-      id: '6',
-      title: 'Hiring subdued amid Budget uncertainty',
-      category: 'Employment',
-      date: '8th December 2025',
-      content: `Hiring activity remained stagnant last month due to Budget uncertainty, according to a report by KPMG and the Recruitment and Employment Confederation (REC). Vacancies fell, continuing a two-year trend, while the number of job seekers surged at the second-fastest rate since November 2020. Meanwhile, permanent salaries increased as companies aimed to attract skilled workers. REC chief Neil Carberry noted signs of potential stabilisation but noted that there is "much more to do to get the economy firing," while Lisa Fernihough from KPMG UK warned that the jobs market "remains stuck in contraction."`,
-      source: 'Daily Mail, The Daily Telegraph, The Times'
-    },
-    {
-      id: '7',
-      title: "Firms take 'low hire, low fire' approach",
-      category: 'Employment',
-      date: '8th December 2025',
-      content: `BDO's employment index dropped from 93.95 to 93.53 in November, the weakest level since April 2011, as businesses adopted a "low-hire, low-fire" stance ahead of the Budget. Economic activity worsened overall, with the output index falling sharply from 101.84 to 97.77, its biggest monthly decline since April 2022. The services sector was particularly weak, with output sliding from 102.75 to 98.12 amid inflation pressures and low consumer confidence. BDO's Scott Knight said: "The run-up to Christmas is usually a golden time where business booms and revenues are shored up, but so far this year it's falling flat."`,
-      source: 'The Times'
-    },
+  
     {
       id: '8',
       title: "Housing survey highlights 'forever renter' rise",
       category: 'Property',
       date: '8th December 2025',
-      content: `First-time buyers in Britain are older and more indebted than ever, according to the English Housing Survey. The average buyer is now 34, with many opting for 30-year mortgages. The average deposit for buyers is £78,131, and many are borrowing more, increasing their vulnerability to falling prices. Only 42% of renters believe they will own a home, a decline from 45% in 2019/20, and Sarah Coles, head of personal finance at Hargreaves Lansdown, noted the rise of the "forever renter." It was found that those aged 45 to 54 made up 18% of private renters, up from 15% a year ago. The Government aims to address the housing crisis with new reforms and a mortgage guarantee scheme.`,
-      source: 'The Times'
+      content: `First-time buyers in Britain are older and more indebted than ever, according to the English Housing Survey. The average buyer is now 34, with many opting for 30-year mortgages. The average deposit for buyers is £78,131, and many are borrowing more, increasing their vulnerability to falling prices. Only 42% of renters believe they will own a home, a decline from 45% in 2019/20, and Sarah Coles, head of personal finance at Hargreaves Lansdown, noted the rise of the "forever renter." It was found that those aged 45 to 54 made up 18% of private renters, up from 15% a year ago. The Government aims to address the housing crisis with new reforms and a mortgage guarantee scheme.`
     },
     {
       id: '9',
       title: 'London homeowners see record losses',
       category: 'Property',
       date: '8th December 2025',
-      content: `London homeowners are selling properties at a greater loss than those anywhere else in England and Wales, with 14% of owners selling for less than they paid, according to estate agency Hamptons. This figure is up from 6% in 2016 and is well above the national average of 8.7%. The report also shows that first-time buyers now account for 50% of purchases in London. Hamptons predicts flat growth in house prices for 2026 due to tax changes, including a council tax surcharge on properties worth £2m or more.`,
-      source: 'The Daily Telegraph'
+      content: `London homeowners are selling properties at a greater loss than those anywhere else in England and Wales, with 14% of owners selling for less than they paid, according to estate agency Hamptons. This figure is up from 6% in 2016 and is well above the national average of 8.7%. The report also shows that first-time buyers now account for 50% of purchases in London. Hamptons predicts flat growth in house prices for 2026 due to tax changes, including a council tax surcharge on properties worth £2m or more.`
     },
-    {
-      id: '10',
-      title: 'Capital faces office space crisis',
-      category: 'Property',
-      date: '8th December 2025',
-      content: `London is facing a significant office space crisis, having lost 14m sq ft of workspace since 2018. According to Knight Frank and the London Property Alliance, over half of the remaining office blocks will be obsolete by 2030. Despite a resurgence in demand, only 15m sq ft is expected to be delivered by 2029. Knight Frank, which has warned of an 11m sq ft shortfall in prime office space by 2028, is urging the Government to prioritise refurbishing older buildings to avoid economic losses.`,
-      source: 'The Times'
-    },
-    {
-      id: '11',
-      title: 'City watchdog looks to boost credit unions',
-      category: 'Financial Services',
-      date: '8th December 2025',
-      content: `A new report from the Financial Conduct Authority (FCA) looks to promote the growth of the mutuals sector, which includes customer or worker-owned organisations and credit unions. The FCA's report offers a series of recommendations aimed at encouraging credit unions to expand and to offer more services. Credit unions serve 2m members and hold £4.9bn in assets and the Treasury plans to review the "common bond" governing such organisations. Ministers have also set aside £30m to fund modernisation measures. However, campaigners warn that without action from mainstream banks, vulnerable consumers may continue to rely on loan sharks. Research by Fair4All Finance, a Government-backed not-for-profit that promotes financial inclusion, shows that 1.9m UK adults have turned to unlicensed money lenders or loan sharks in the past year.`,
-      source: 'The Guardian'
-    },
-    {
-      id: '12',
-      title: 'Green entrepreneur in energy bill warning',
-      category: 'Energy',
-      date: '8th December 2025',
-      content: `Dale Vince, a former Labour donor, has warned that the £150 reduction in household energy bills promised by Chancellor Rachel Reeves may be offset by hidden costs associated with the Sizewell C nuclear project. Mr Vince claims that the £1bn cost in the first year and rising levies from Ofgem will negate the savings, saying: "The Chancellor's energy savings will be wiped out overnight by the cost of Sizewell." The Department for Energy Security and Net Zero disputes these claims, asserting that Sizewell C will only add about £1 a month to bills during construction.`,
-      source: 'The Independent'
-    },
-    {
-      id: '13',
-      title: 'Lammy set to announce corruption crackdown',
-      category: 'Other',
-      date: '8th December 2025',
-      content: `David Lammy, the Justice Secretary, is set to announce a new anti-corruption strategy aimed at combating illicit finance and bribery in public services. The plan includes £15m in funding for the City of London police's domestic corruption unit and a global summit on countering illicit finance. The strategy also seeks to enhance transparency in political donations and contracts, while addressing the role of professional enablers in facilitating corruption. Mr Lammy said: "We must root out the minority who help corrupt actors hide their dirty money."`,
-      source: 'The Guardian'
-    }
   ];
 
   const categories = ['All', 'Tax', 'Property', 'Employment', 'Leisure & Hospitality', 'Financial Services', 'Energy', 'Other'];
@@ -206,11 +116,7 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
                         )}
                       </div>
                       
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                        <div className="flex items-center text-sm text-gray-500">
-                          <FileText size={16} className="mr-1" />
-                          <span>{post.source}</span>
-                        </div>
+                      <div className="flex items-center justify-end pt-4 border-t border-gray-200">
                         <button
                           onClick={() => togglePost(post.id)}
                           className="text-[#C8A75B] hover:text-[#B8964A] font-semibold text-sm flex items-center gap-1 transition-colors"

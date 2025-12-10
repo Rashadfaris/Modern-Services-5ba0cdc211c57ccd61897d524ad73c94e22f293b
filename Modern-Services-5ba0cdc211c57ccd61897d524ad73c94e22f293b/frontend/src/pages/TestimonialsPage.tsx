@@ -127,7 +127,7 @@ export function TestimonialsPage({ onNavigate }: TestimonialsPageProps) {
     })),
     ...firestoreTestimonials.map((t) => ({
       name: t.name,
-      role: t.location,
+      role: t.location || t.role || 'Client',
       content: t.message,
       rating: t.rating || 5,
       date: undefined as string | undefined
