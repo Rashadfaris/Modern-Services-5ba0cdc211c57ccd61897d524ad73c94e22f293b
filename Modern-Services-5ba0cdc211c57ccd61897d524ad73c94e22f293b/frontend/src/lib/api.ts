@@ -425,7 +425,7 @@ export async function deleteBlog(blogId: string): Promise<void> {
 
 export interface Page {
   id?: string;
-  slug: 'home' | 'about' | 'services' | 'contact';
+  slug: 'home' | 'about' | 'services' | 'contact' | 'testimonials';
   title: string;
   content: any; // Flexible JSON object - structure varies by page
   meta?: {

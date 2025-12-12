@@ -578,10 +578,10 @@ export function PageManagement({ onLogout: _onLogout }: PageManagementProps) {
     });
   };
 
-  // Get page by slug or return null
-  const getPageBySlug = (slug: 'home' | 'about' | 'services' | 'contact') => {
-    return pages.find(p => p.slug === slug);
-  };
+    // Get page by slug or return null
+    const getPageBySlug = (slug: 'home' | 'about' | 'services' | 'contact' | 'testimonials') => {
+      return pages.find(p => p.slug === slug);
+    };
 
   return (
     <div className="min-h-screen bg-[#F4F5F7]">

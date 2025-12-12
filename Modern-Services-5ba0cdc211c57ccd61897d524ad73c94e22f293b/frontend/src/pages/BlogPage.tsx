@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
 import { FadeIn } from '../components/FadeIn';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { Calendar, ChevronDown, ChevronUp } from 'lucide-react';
+import { getPublishedBlogs, Blog } from '../lib/api';
 
 interface BlogPageProps {
   onNavigate: (page: string) => void;
@@ -19,6 +20,8 @@ interface BlogPost {
 export function BlogPage({ onNavigate }: BlogPageProps) {
   const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const togglePost = (postId: string) => {
     const newExpanded = new Set(expandedPosts);
@@ -36,23 +39,49 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
     setExpandedPosts(new Set());
   };
 
-  const blogPosts: BlogPost[] = [
-  
-    {
-      id: '8',
-      title: "Housing survey highlights 'forever renter' rise",
-      category: 'Property',
-      date: '8th December 2025',
-      content: `First-time buyers in Britain are older and more indebted than ever, according to the English Housing Survey. The average buyer is now 34, with many opting for 30-year mortgages. The average deposit for buyers is £78,131, and many are borrowing more, increasing their vulnerability to falling prices. Only 42% of renters believe they will own a home, a decline from 45% in 2019/20, and Sarah Coles, head of personal finance at Hargreaves Lansdown, noted the rise of the "forever renter." It was found that those aged 45 to 54 made up 18% of private renters, up from 15% a year ago. The Government aims to address the housing crisis with new reforms and a mortgage guarantee scheme.`
-    },
-    {
-      id: '9',
-      title: 'London homeowners see record losses',
-      category: 'Property',
-      date: '8th December 2025',
-      content: `London homeowners are selling properties at a greater loss than those anywhere else in England and Wales, with 14% of owners selling for less than they paid, according to estate agency Hamptons. This figure is up from 6% in 2016 and is well above the national average of 8.7%. The report also shows that first-time buyers now account for 50% of purchases in London. Hamptons predicts flat growth in house prices for 2026 due to tax changes, including a council tax surcharge on properties worth £2m or more.`
-    },
-  ];
+  // Fetch published blogs from API
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        setLoading(true);
+        const blogs = await getPublishedBlogs();
+        
+        // Transform Blog[] to BlogPost[]
+        const transformedPosts: BlogPost[] = blogs.map((blog: Blog) => {
+          // Format date
+          const date = blog.createdAt 
+            ? new Date(blog.createdAt).toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              })
+            : new Date().toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              });
+          
+          return {
+            id: blog.id || '',
+            title: blog.title,
+            category: blog.category,
+            date: date,
+            content: blog.content
+          };
+        });
+        
+        setBlogPosts(transformedPosts);
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+        // Keep empty array on error
+        setBlogPosts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
 
   const categories = ['All', 'Tax', 'Property', 'Employment', 'Leisure & Hospitality', 'Financial Services', 'Energy', 'Other'];
 
@@ -85,7 +114,12 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
-              {filteredPosts.length === 0 ? (
+              {loading ? (
+                <div className="bg-white rounded-lg shadow-md p-8 text-center">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#C8A75B] mb-4"></div>
+                  <p className="text-gray-600 text-lg">Loading blog posts...</p>
+                </div>
+              ) : filteredPosts.length === 0 ? (
                 <div className="bg-white rounded-lg shadow-md p-8 text-center">
                   <p className="text-gray-600 text-lg">No posts found in this category.</p>
                 </div>
