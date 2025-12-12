@@ -68,3 +68,4 @@ siteSettingsSchema.set('toJSON', {
 
 module.exports = mongoose.model('SiteSettings', siteSettingsSchema);
 
+

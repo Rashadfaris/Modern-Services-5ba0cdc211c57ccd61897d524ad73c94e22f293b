@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { 
   getSiteSettings, 
-  updateSiteSettings,
-  SiteSettings 
+  updateSiteSettings
 } from '../lib/api';
 import { Save, Settings } from 'lucide-react';
 import { FadeIn } from './FadeIn';
@@ -13,7 +12,6 @@ interface SiteSettingsManagementProps {
 }
 
 export function SiteSettingsManagement({ onLogout: _onLogout }: SiteSettingsManagementProps) {
-  const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +32,6 @@ export function SiteSettingsManagement({ onLogout: _onLogout }: SiteSettingsMana
       setLoading(true);
       setError(null);
       const siteSettings = await getSiteSettings();
-      setSettings(siteSettings);
       setFormData({
         yearsOfExperience: siteSettings.yearsOfExperience || '10+',
         happyClients: siteSettings.happyClients || '56+',
@@ -222,4 +219,5 @@ export function SiteSettingsManagement({ onLogout: _onLogout }: SiteSettingsMana
     </div>
   );
 }
+
 

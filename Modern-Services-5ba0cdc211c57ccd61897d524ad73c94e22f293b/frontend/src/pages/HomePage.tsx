@@ -5,7 +5,7 @@ import { TestimonialCard } from '../components/TestimonialCard';
 import { Shield, TrendingUp, Clock, FileCheck, Building2, Users, Wallet, Wrench } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { FadeIn } from '../components/FadeIn';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { usePageContent } from '../hooks/usePageContent';
 import { getSiteSettings, SiteSettings } from '../lib/api';
 
@@ -24,7 +24,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
   }, []);
   
   // Default content (fallback if API content not available)
-  const defaultContent = {
+  // Use useMemo to recalculate when siteSettings changes
+  const defaultContent = useMemo(() => ({
     hero: {
       mainTitle: "Modern Services",
       subtitle: "Your Trusted Partner for Property Management in England",
@@ -34,7 +35,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
     },
     about: {
       title: "About Modern Services",
-      description1: "For over 10+ years, Modern Services has empowered international investors with exceptional property management across England. We enhance both your investments and the communities we manage.",
+      description1: `For over ${siteSettings?.yearsOfExperience || '10+'} years, Modern Services has empowered international investors with exceptional property management across England. We enhance both your investments and the communities we manage.`,
       description2: "Our comprehensive approach combines expert property management with integrated accounting services, ensuring your investments are professionally managed, fully compliant, and optimized for maximum returns."
     },
     benefits: {
@@ -55,10 +56,27 @@ export function HomePage({ onNavigate }: HomePageProps) {
       ctaPrimary: "Schedule Consultation",
       ctaSecondary: "Learn More"
     }
+  }), [siteSettings?.yearsOfExperience]);
+
+  // Helper function to replace hardcoded years values with dynamic value
+  const replaceYearsInText = (text: string): string => {
+    if (!siteSettings?.yearsOfExperience) return text;
+    const yearsValue = siteSettings.yearsOfExperience;
+    // Replace patterns like "10 years", "10+ years", "over 10 years", "10+", etc.
+    return text
+      .replace(/\b\d+\+?\s*years?\b/gi, `${yearsValue} years`)
+      .replace(/\bover\s+\d+\+?\s*years?\b/gi, `over ${yearsValue} years`)
+      .replace(/\bfor\s+over\s+\d+\+?\s*years?\b/gi, `For over ${yearsValue} years`);
   };
 
   // Use API content if available, otherwise use defaults
   const content = pageContent?.content || defaultContent;
+  
+  // Process about description1 to replace any hardcoded years
+  const aboutDescription1 = useMemo(() => {
+    const desc = content.about?.description1 || defaultContent.about.description1;
+    return replaceYearsInText(desc);
+  }, [content.about?.description1, defaultContent.about.description1, siteSettings?.yearsOfExperience]);
 
   const testimonials = [
     {
@@ -132,7 +150,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <div className="text-center lg:text-left">
               <h2 className="text-2xl sm:text-3xl md:text-4xl text-[#0A1A2F] mb-4 sm:mb-6">{content.about?.title || defaultContent.about.title}</h2>
               <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6 leading-relaxed">
-                {content.about?.description1 || `For over ${siteSettings?.yearsOfExperience || '10+'} years, Modern Services has empowered international investors with exceptional property management across England. We enhance both your investments and the communities we manage.`}
+                {aboutDescription1}
               </p>
               <p className="text-sm sm:text-base text-gray-700 mb-6 sm:mb-8 leading-relaxed">
                 {content.about?.description2 || defaultContent.about.description2}

@@ -1,4 +1,6 @@
 import { Mail, Phone, FileText, Shield } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { getSiteSettings, SiteSettings } from '../lib/api';
 
 interface FooterProps {
   onNavigate: (page: string) => void;
@@ -6,6 +8,12 @@ interface FooterProps {
 
 export function Footer({ onNavigate }: FooterProps) {
   const currentYear = new Date().getFullYear();
+  const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
+
+  // Load site settings
+  useEffect(() => {
+    getSiteSettings().then(setSiteSettings).catch(() => null);
+  }, []);
 
   return (
     <footer className="bg-[#0A1A2F] text-white">
@@ -15,7 +23,7 @@ export function Footer({ onNavigate }: FooterProps) {
           <div>
             <h3 className="text-xl font-bold mb-4 text-[#C8A75B]">Modern Services</h3>
             <p className="text-gray-300 text-sm mb-4">
-              Your trusted partner for property management in England. Serving international investors with excellence for over 10 years.
+              Your trusted partner for property management in England. Serving international investors with excellence for over {siteSettings?.yearsOfExperience || '10+'} years.
             </p>
           </div>
 

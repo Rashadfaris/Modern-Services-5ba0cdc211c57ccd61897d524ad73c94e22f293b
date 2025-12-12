@@ -4,10 +4,9 @@ import {
   getAllPages, 
   createPage, 
   updatePage, 
-  deletePage,
   Page 
 } from '../lib/api';
-import { Edit, Trash2, X, Save, FileText, Home, Info, Briefcase, Mail } from 'lucide-react';
+import { Edit, X, Save, Home, Info, Briefcase, Mail } from 'lucide-react';
 import { FadeIn } from './FadeIn';
 
 interface PageManagementProps {
@@ -247,22 +246,6 @@ export function PageManagement({ onLogout: _onLogout }: PageManagementProps) {
     }
   };
 
-  const handleDelete = async (slug: 'home' | 'about' | 'services' | 'contact') => {
-    if (!confirm(`Are you sure you want to delete the ${PAGE_CONFIG[slug].label} page? This action cannot be undone.`)) {
-      return;
-    }
-
-    try {
-      setProcessing(slug);
-      await deletePage(slug);
-      await loadPages();
-    } catch (error) {
-      console.error('Error deleting page:', error);
-      alert('Failed to delete page. Please try again.');
-    } finally {
-      setProcessing(null);
-    }
-  };
 
   const formatDate = (date: Date | string) => {
     if (!date) return 'N/A';
@@ -442,9 +425,9 @@ export function PageManagement({ onLogout: _onLogout }: PageManagementProps) {
                           </p>
                         </div>
                       )}
-                      <div className="flex gap-2 pt-2">
+                      <div className="pt-2">
                         <Button
-                          onClick={() => handleEdit(page, slug)}
+                          onClick={() => handleEdit(page || null, slug)}
                           variant="outline"
                           className="border-blue-300 text-blue-600 hover:bg-blue-50"
                           fullWidth
@@ -452,18 +435,6 @@ export function PageManagement({ onLogout: _onLogout }: PageManagementProps) {
                           <Edit size={18} className="mr-2" />
                           {page ? 'Edit' : 'Edit Default Content'}
                         </Button>
-                        {page && (
-                          <Button
-                            onClick={() => handleDelete(slug)}
-                            disabled={processing === slug}
-                            variant="outline"
-                            className="border-red-300 text-red-600 hover:bg-red-50"
-                            fullWidth
-                          >
-                            <Trash2 size={18} className="mr-2" />
-                            {processing === slug ? 'Deleting...' : 'Delete'}
-                          </Button>
-                        )}
                       </div>
                     </div>
                   </div>

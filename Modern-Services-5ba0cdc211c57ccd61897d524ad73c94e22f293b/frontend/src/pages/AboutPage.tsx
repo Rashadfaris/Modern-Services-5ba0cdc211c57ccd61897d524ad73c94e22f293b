@@ -6,7 +6,7 @@ import { Button } from '../components/ui/button';
 import { FadeIn } from '../components/FadeIn';
 import { usePageContent } from '../hooks/usePageContent';
 import { getSiteSettings, SiteSettings } from '../lib/api';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 interface AboutPageProps {
   onNavigate: (page: string) => void;
@@ -22,7 +22,8 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
   }, []);
   
   // Default content (fallback if API content not available)
-  const defaultContent = {
+  // Use useMemo to recalculate when siteSettings changes
+  const defaultContent = useMemo(() => ({
     hero: {
       title: "About Modern Services",
       description: "A decade of excellence in property management and accounting services"
@@ -61,10 +62,28 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
       title: "Ready to Partner With Us?",
       description: "Let's discuss how we can help you achieve your property investment goals in England."
     }
-  };
+  }), [siteSettings?.yearsOfExperience]);
 
   // Use API content if available, otherwise use defaults
   const content = pageContent?.content || defaultContent;
+  
+  // Helper function to replace hardcoded years values with dynamic value
+  const replaceYearsInText = (text: string): string => {
+    if (!siteSettings?.yearsOfExperience) return text;
+    const yearsValue = siteSettings.yearsOfExperience;
+    // Replace patterns like "10 years", "10+ years", "over 10 years", "10+", etc.
+    return text
+      .replace(/\b\d+\+?\s*years?\b/gi, `${yearsValue} years`)
+      .replace(/\bover\s+\d+\+?\s*years?\b/gi, `over ${yearsValue} years`)
+      .replace(/\bfounded\s+over\s+\d+\+?\s*years?\s+ago\b/gi, `Founded over ${yearsValue} years ago`);
+  };
+  
+  // Process story paragraphs to replace any hardcoded years
+  const storyParagraphs = useMemo(() => {
+    const paragraphs = content.story?.paragraphs || defaultContent.story.paragraphs;
+    return paragraphs.map((para: string) => replaceYearsInText(para));
+  }, [content.story?.paragraphs, defaultContent.story.paragraphs, siteSettings?.yearsOfExperience]);
+  
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -90,7 +109,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-[#0A1A2F] mb-6">{content.story?.title || defaultContent.story.title}</h2>
-              {(content.story?.paragraphs || defaultContent.story.paragraphs).map((paragraph: string, index: number) => (
+              {storyParagraphs.map((paragraph: string, index: number) => (
                 <p key={index} className="text-gray-700 mb-4 leading-relaxed">
                   {paragraph}
                 </p>

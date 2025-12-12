@@ -170,7 +170,7 @@ export function TestimonialsPage({ onNavigate }: TestimonialsPageProps) {
               <div className="text-white text-sm">5-Star Average Rating</div>
             </div>
             <div>
-              <div className="text-4xl text-white mb-2">98%</div>
+              <div className="text-4xl text-white mb-2">{siteSettings?.clientSatisfaction || '98%'}</div>
               <div className="text-white text-sm">Client Satisfaction</div>
             </div>
             <div>

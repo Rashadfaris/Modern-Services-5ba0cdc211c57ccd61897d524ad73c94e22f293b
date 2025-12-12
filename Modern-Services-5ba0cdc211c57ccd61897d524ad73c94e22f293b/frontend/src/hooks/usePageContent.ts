@@ -33,3 +33,4 @@ export function usePageContent(slug: 'home' | 'about' | 'services' | 'contact') 
   return { pageContent, loading, error };
 }
 
+
