@@ -38,11 +38,70 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
     },
     values: {
       title: "Our Core Values",
-      description: "These principles guide every decision we make and every service we provide."
+      description: "These principles guide every decision we make and every service we provide.",
+      cards: [
+        {
+          icon: "Heart",
+          title: "Integrity",
+          description: "We operate with honesty and transparency in all our dealings, building trust through ethical practices."
+        },
+        {
+          icon: "Eye",
+          title: "Transparency",
+          description: "Clear, open communication and detailed reporting keep you informed every step of the way."
+        },
+        {
+          icon: "Users",
+          title: "Client-Centricity",
+          description: "Your success is our success. We tailor our services to meet your unique investment goals."
+        },
+        {
+          icon: "Lightbulb",
+          title: "Innovation",
+          description: "We embrace technology and modern practices to deliver superior service and results."
+        },
+        {
+          icon: "Award",
+          title: "Expertise",
+          description: "A decade of experience combined with continuous learning keeps us at the industry forefront."
+        }
+      ]
     },
     whyChoose: {
       title: "Why Choose Modern Services?",
-      description: "We offer a unique combination of expertise, technology, and personalized service that sets us apart."
+      description: "We offer a unique combination of expertise, technology, and personalized service that sets us apart.",
+      cards: [
+        {
+          icon: "Target",
+          title: "Specialized Expertise",
+          description: "Deep knowledge of UK property laws, regulations, and market dynamics specifically for international investors."
+        },
+        {
+          icon: "Shield",
+          title: "Comprehensive Solutions",
+          description: "From property management to accounting and tax compliance, we handle all aspects of your investment."
+        },
+        {
+          icon: "BarChart",
+          title: "Transparent Reporting",
+          description: "Detailed monthly reports and real-time access to your property's financial performance through our online portal."
+        },
+        {
+          icon: "UserCheck",
+          title: "Dedicated Account Management",
+          description: "Your personal account manager knows your portfolio inside out and is always available to assist."
+        },
+        {
+          icon: "Calculator",
+          title: "Integrated Tax & Financial Support",
+          description: "Expert accounting services and tax planning through our partnership with Pluto Consultancy."
+        },
+        {
+          icon: "Laptop",
+          title: "Advanced Technology",
+          description: "State-of-the-art property management software and online portal for 24/7 access to your investment data."
+        }
+      ]
     },
     mission: {
       title: "Our Mission",
@@ -83,6 +142,31 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
     const paragraphs = content.story?.paragraphs || defaultContent.story.paragraphs;
     return paragraphs.map((para: string) => replaceYearsInText(para));
   }, [content.story?.paragraphs, defaultContent.story.paragraphs, siteSettings?.yearsOfExperience]);
+
+  // Icon mapping for value cards
+  const valueIconMap: Record<string, typeof Heart> = {
+    Heart,
+    Eye,
+    Users,
+    Lightbulb,
+    Award
+  };
+
+  // Icon mapping for why choose cards (benefit cards)
+  const whyChooseIconMap: Record<string, typeof Target> = {
+    Target,
+    Shield,
+    BarChart,
+    UserCheck,
+    Calculator,
+    Laptop
+  };
+
+  // Get value cards from content or default
+  const valueCards = content.values?.cards || defaultContent.values.cards;
+
+  // Get why choose cards from content or default
+  const whyChooseCards = content.whyChoose?.cards || defaultContent.whyChoose.cards;
   
   return (
     <div className="min-h-screen">
@@ -138,31 +222,17 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-            <ValueCard
-              icon={Heart}
-              title="Integrity"
-              description="We operate with honesty and transparency in all our dealings, building trust through ethical practices."
-            />
-            <ValueCard
-              icon={Eye}
-              title="Transparency"
-              description="Clear, open communication and detailed reporting keep you informed every step of the way."
-            />
-            <ValueCard
-              icon={Users}
-              title="Client-Centricity"
-              description="Your success is our success. We tailor our services to meet your unique investment goals."
-            />
-            <ValueCard
-              icon={Lightbulb}
-              title="Innovation"
-              description="We embrace technology and modern practices to deliver superior service and results."
-            />
-            <ValueCard
-              icon={Award}
-              title="Expertise"
-              description="A decade of experience combined with continuous learning keeps us at the industry forefront."
-            />
+            {valueCards?.map((card: any, index: number) => {
+              const IconComponent = valueIconMap[card.icon] || Heart;
+              return (
+                <ValueCard
+                  key={index}
+                  icon={IconComponent}
+                  title={card.title}
+                  description={card.description}
+                />
+              );
+            })}
             </div>
           </FadeIn>
         </div>
@@ -179,36 +249,17 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <BenefitCard
-              icon={Target}
-              title="Specialized Expertise"
-              description="Deep knowledge of UK property laws, regulations, and market dynamics specifically for international investors."
-            />
-            <BenefitCard
-              icon={Shield}
-              title="Comprehensive Solutions"
-              description="From property management to accounting and tax compliance, we handle all aspects of your investment."
-            />
-            <BenefitCard
-              icon={BarChart}
-              title="Transparent Reporting"
-              description="Detailed monthly reports and real-time access to your property's financial performance through our online portal."
-            />
-            <BenefitCard
-              icon={UserCheck}
-              title="Dedicated Account Management"
-              description="Your personal account manager knows your portfolio inside out and is always available to assist."
-            />
-            <BenefitCard
-              icon={Calculator}
-              title="Integrated Tax & Financial Support"
-              description="Expert accounting services and tax planning through our partnership with Pluto Consultancy."
-            />
-            <BenefitCard
-              icon={Laptop}
-              title="Advanced Technology"
-              description="State-of-the-art property management software and online portal for 24/7 access to your investment data."
-            />
+            {whyChooseCards?.map((card: any, index: number) => {
+              const IconComponent = whyChooseIconMap[card.icon] || Target;
+              return (
+                <BenefitCard
+                  key={index}
+                  icon={IconComponent}
+                  title={card.title}
+                  description={card.description}
+                />
+              );
+            })}
             </div>
           </FadeIn>
         </div>

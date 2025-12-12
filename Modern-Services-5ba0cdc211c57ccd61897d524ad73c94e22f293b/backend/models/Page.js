@@ -13,7 +13,7 @@ const pageSchema = new mongoose.Schema({
     required: [true, 'Page slug is required'],
     trim: true,
     unique: true,
-    enum: ['home', 'about', 'services', 'contact'],
+    enum: ['home', 'about', 'services', 'contact', 'testimonials'],
     lowercase: true
   },
   title: {

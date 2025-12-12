@@ -5,7 +5,7 @@ import { getPageBySlug, Page } from '../lib/api';
  * Custom hook to load page content from API
  * Falls back to null if page doesn't exist or API fails
  */
-export function usePageContent(slug: 'home' | 'about' | 'services' | 'contact') {
+export function usePageContent(slug: 'home' | 'about' | 'services' | 'contact' | 'testimonials') {
   const [pageContent, setPageContent] = useState<Page | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

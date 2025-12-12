@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { TestimonialCard } from '../components/TestimonialCard';
 import { Button } from '../components/ui/button';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { FadeIn } from '../components/FadeIn';
 import { Star, Quote, Send, CheckCircle } from 'lucide-react';
 import { submitTestimonial, getApprovedTestimonials, Testimonial, getSiteSettings, SiteSettings } from '../lib/api';
+import { usePageContent } from '../hooks/usePageContent';
 
 interface TestimonialsPageProps {
   onNavigate: (page: string) => void;
@@ -21,6 +22,21 @@ export function TestimonialsPage({ onNavigate }: TestimonialsPageProps) {
     location: '',
     message: ''
   });
+
+  // Try to get page content (may not exist, that's okay)
+  const { pageContent } = usePageContent('testimonials');
+
+  // Default content for countries section
+  const defaultContent = useMemo(() => ({
+    countries: {
+      title: "Serving Investors Globally",
+      description: "We proudly serve property investors from around the world who trust us with their UK investments.",
+      countriesList: ['UAE', 'USA', 'Saudi', 'Spain', 'France', 'Germany', 'Australia', 'Japan', 'India', 'Qatar', 'Mexico', 'Ireland']
+    }
+  }), []);
+
+  // Use API content if available, otherwise use defaults
+  const content = pageContent?.content || defaultContent;
 
   // Static testimonials (fallback)
   const staticTestimonials = [
@@ -334,13 +350,13 @@ export function TestimonialsPage({ onNavigate }: TestimonialsPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-12">
-            <h2 className="text-[#0A1A2F] mb-4">Serving Investors Globally</h2>
+            <h2 className="text-[#0A1A2F] mb-4">{content.countries?.title || defaultContent.countries.title}</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              We proudly serve property investors from around the world who trust us with their UK investments.
+              {content.countries?.description || defaultContent.countries.description}
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 text-center">
-            {['UAE', 'USA', 'Saudi', 'Spain', 'France', 'Germany', 'Australia', 'Japan', 'India', 'Qatar', 'Mexico', 'Ireland'].map((country) => (
+            {(content.countries?.countriesList || defaultContent.countries.countriesList).map((country: string) => (
               <div key={country} className="bg-[#F4F5F7] p-6 rounded-lg">
                 <div className="text-[#0A1A2F]">{country}</div>
               </div>

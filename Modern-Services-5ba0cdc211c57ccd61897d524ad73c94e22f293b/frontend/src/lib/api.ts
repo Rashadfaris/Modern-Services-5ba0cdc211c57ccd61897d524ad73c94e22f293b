@@ -464,7 +464,7 @@ export async function getAllPages(): Promise<Page[]> {
  * Get a single page by slug
  * Used by frontend pages to load content dynamically
  */
-export async function getPageBySlug(slug: 'home' | 'about' | 'services' | 'contact'): Promise<Page> {
+export async function getPageBySlug(slug: 'home' | 'about' | 'services' | 'contact' | 'testimonials'): Promise<Page> {
   try {
     const response = await fetch(`${API_BASE_URL}/pages/${slug}`);
     const page = await handleResponse<Page>(response);
@@ -488,7 +488,7 @@ export async function getPageBySlug(slug: 'home' | 'about' | 'services' | 'conta
  * Create a new page (admin only)
  */
 export async function createPage(
-  slug: 'home' | 'about' | 'services' | 'contact',
+  slug: 'home' | 'about' | 'services' | 'contact' | 'testimonials',
   title: string,
   content: any,
   meta?: { description?: string; keywords?: string }
@@ -522,7 +522,7 @@ export async function createPage(
  * Update a page (admin only)
  */
 export async function updatePage(
-  slug: 'home' | 'about' | 'services' | 'contact',
+  slug: 'home' | 'about' | 'services' | 'contact' | 'testimonials',
   updates: {
     title?: string;
     content?: any;
@@ -553,7 +553,7 @@ export async function updatePage(
 /**
  * Delete a page (admin only)
  */
-export async function deletePage(slug: 'home' | 'about' | 'services' | 'contact'): Promise<void> {
+export async function deletePage(slug: 'home' | 'about' | 'services' | 'contact' | 'testimonials'): Promise<void> {
   try {
     const response = await fetch(`${API_BASE_URL}/pages/${slug}`, {
       method: 'DELETE',

@@ -39,11 +39,185 @@ export function ServicesPage({ onNavigate }: ServicesPageProps) {
     },
     propertyManagement: {
       title: "Comprehensive Property Management",
-      description: "Full-service property management designed specifically for international investors. We handle every aspect of your property investment, allowing you to enjoy passive income with complete peace of mind."
+      description: "Full-service property management designed specifically for international investors. We handle every aspect of your property investment, allowing you to enjoy passive income with complete peace of mind.",
+      quickFeatures: [
+        "Professional tenant screening",
+        "24/7 emergency support",
+        "Rent collection & management",
+        "Property maintenance & repairs",
+        "Legal compliance & reporting",
+        "Market analysis & advice"
+      ],
+      subServices: [
+        {
+          id: "rent-collection",
+          icon: "Wallet",
+          title: "Rent Collection & Financial Management",
+          description: "We ensure timely rent collection and provide transparent financial reporting for your peace of mind.",
+          features: [
+            "Automated monthly rent collection",
+            "Detailed monthly financial statements",
+            "Direct deposit to your international account",
+            "Arrears management and recovery",
+            "Online portal access to financial data"
+          ]
+        },
+        {
+          id: "tax-compliance",
+          icon: "FileCheck",
+          title: "Tax & Legal Compliance",
+          description: "Stay compliant with UK property laws and tax regulations while optimizing your tax position.",
+          features: [
+            "Safety certificate management (Gas, EPC, EICR)",
+            "Landlord licensing and registration",
+            "Tenancy deposit protection",
+            "Tax reporting and HMRC compliance",
+            "Right to Rent checks"
+          ]
+        },
+        {
+          id: "tenant-sourcing",
+          icon: "Users",
+          title: "Tenant Sourcing & Management",
+          description: "Find and retain high-quality tenants through our rigorous screening and relationship management process.",
+          features: [
+            "Professional property marketing",
+            "Comprehensive tenant screening (credit, employment, references)",
+            "Property viewings and tenant selection",
+            "Tenancy agreement preparation",
+            "Move-in inspections and inventory",
+            "Ongoing tenant relationship management"
+          ]
+        },
+        {
+          id: "short-term",
+          icon: "Home",
+          title: "Short-Term Rental Management",
+          description: "Maximize returns with professional Airbnb and short-term rental management.",
+          features: [
+            "Listing optimization on multiple platforms",
+            "Dynamic pricing strategies",
+            "Guest communication and support",
+            "Professional cleaning and turnover",
+            "Review management"
+          ]
+        },
+        {
+          id: "maintenance",
+          icon: "Wrench",
+          title: "Property Maintenance & Repairs",
+          description: "Keep your property in prime condition with proactive maintenance and rapid response repairs.",
+          features: [
+            "24/7 emergency maintenance hotline",
+            "Network of vetted, reliable contractors",
+            "Preventive maintenance programs",
+            "Property inspections (quarterly/bi-annual)",
+            "Cost-effective repair solutions",
+            "Detailed repair reports with photos"
+          ]
+        },
+        {
+          id: "market-analysis",
+          icon: "TrendingUp",
+          title: "Market Analysis & Investment Advice",
+          description: "Make informed decisions with expert market insights and investment guidance.",
+          features: [
+            "Local market analysis and trends",
+            "Rental yield optimization",
+            "Property valuation services",
+            "Portfolio growth strategies",
+            "Investment opportunity identification"
+          ]
+        },
+        {
+          id: "marketing",
+          icon: "Search",
+          title: "Property Marketing",
+          description: "Minimize void periods with professional property marketing and advertising.",
+          features: [
+            "Professional photography and videography",
+            "Listing on major property portals (Rightmove, Zoopla)",
+            "Social media promotion",
+            "Virtual tours and 3D walkthroughs",
+            "Targeted advertising campaigns"
+          ]
+        },
+        {
+          id: "support",
+          icon: "Clock",
+          title: "24/7 Dedicated Support",
+          description: "Round-the-clock support for you and your tenants, wherever you are in the world.",
+          features: [
+            "Dedicated account manager",
+            "24/7 emergency hotline",
+            "Multi-language support",
+            "Online owner portal access",
+            "Regular performance reviews"
+          ]
+        }
+      ]
     },
     accounting: {
       title: "Accounting Services",
-      description: "Professional accounting and financial services to keep your property business compliant and profitable."
+      description: "Professional accounting and financial services to keep your property business compliant and profitable.",
+      services: [
+        {
+          icon: "BookOpen",
+          title: "Bookkeeping Services",
+          description: "Accurate record-keeping of all property-related transactions and expenses.",
+          features: [
+            "Income and expense tracking",
+            "Bank reconciliation",
+            "Financial reporting"
+          ]
+        },
+        {
+          icon: "UserCheck",
+          title: "Payroll Processing",
+          description: "Efficient payroll management for property staff and contractors.",
+          features: [
+            "Employee payment processing",
+            "PAYE and NI calculations",
+            "Pension auto-enrolment"
+          ]
+        },
+        {
+          icon: "BarChart",
+          title: "Accounts Preparation",
+          description: "Year-end accounts preparation for tax filing and business planning.",
+          features: [
+            "Annual financial statements",
+            "Management accounts",
+            "Budget forecasting"
+          ]
+        },
+        {
+          icon: "FileCheck",
+          title: "Tax Compliance",
+          description: "Comprehensive tax support for UK property investors.",
+          features: [
+            "Self-assessment tax returns",
+            "Corporation tax filing",
+            "VAT registration and returns"
+          ]
+        },
+        {
+          icon: "Briefcase",
+          title: "Business Start-up Support",
+          description: "Guidance for launching and structuring your property business.",
+          features: [
+            "Company formation",
+            "Business structure advice",
+            "Registration services"
+          ]
+        }
+      ],
+      plutoCta: {
+        title: "Expert Accountancy & Tax Advice",
+        description: "For comprehensive accountancy and tax consultancy services, visit our specialist partner Pluto Consultancy.",
+        buttonText: "Visit Pluto Consultancy",
+        url: "https://plutoconsultancy.com"
+      }
     },
     cta: {
       title: "Let's Discuss Your Property Needs",
@@ -54,9 +228,34 @@ export function ServicesPage({ onNavigate }: ServicesPageProps) {
   // Use API content if available, otherwise use defaults
   const content = pageContent?.content || defaultContent;
 
+  // Icon mapping for sub-services
+  const subServiceIconMap: Record<string, any> = {
+    Wallet,
+    FileCheck,
+    Users,
+    Home,
+    Wrench,
+    TrendingUp,
+    Search,
+    Clock
+  };
+
+  // Icon mapping for accounting services
+  const accountingIconMap: Record<string, any> = {
+    BookOpen,
+    UserCheck,
+    BarChart,
+    FileCheck,
+    Briefcase
+  };
+
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? null : section);
   };
+
+  // Get content from API or defaults
+  const propertyManagement = content.propertyManagement || defaultContent.propertyManagement;
+  const accounting = content.accounting || defaultContent.accounting;
 
   return (
     <div className="min-h-screen">
@@ -94,397 +293,50 @@ export function ServicesPage({ onNavigate }: ServicesPageProps) {
                 </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            <div className="bg-[#F4F5F7] p-6 rounded-lg">
-              <div className="flex items-center space-x-2 mb-3">
-                <span className="text-[#C8A75B] text-2xl">✓</span>
-                <span className="text-[#0A1A2F]">Professional tenant screening</span>
+            {propertyManagement.quickFeatures?.map((feature: string, index: number) => (
+              <div key={index} className="bg-[#F4F5F7] p-6 rounded-lg">
+                <div className="flex items-center space-x-2 mb-3">
+                  <span className="text-[#C8A75B] text-2xl">✓</span>
+                  <span className="text-[#0A1A2F]">{feature}</span>
+                </div>
               </div>
-            </div>
-            <div className="bg-[#F4F5F7] p-6 rounded-lg">
-              <div className="flex items-center space-x-2 mb-3">
-                <span className="text-[#C8A75B] text-2xl">✓</span>
-                <span className="text-[#0A1A2F]">24/7 emergency support</span>
-              </div>
-            </div>
-            <div className="bg-[#F4F5F7] p-6 rounded-lg">
-              <div className="flex items-center space-x-2 mb-3">
-                <span className="text-[#C8A75B] text-2xl">✓</span>
-                <span className="text-[#0A1A2F]">Rent collection & management</span>
-              </div>
-            </div>
-            <div className="bg-[#F4F5F7] p-6 rounded-lg">
-              <div className="flex items-center space-x-2 mb-3">
-                <span className="text-[#C8A75B] text-2xl">✓</span>
-                <span className="text-[#0A1A2F]">Property maintenance & repairs</span>
-              </div>
-            </div>
-            <div className="bg-[#F4F5F7] p-6 rounded-lg">
-              <div className="flex items-center space-x-2 mb-3">
-                <span className="text-[#C8A75B] text-2xl">✓</span>
-                <span className="text-[#0A1A2F]">Legal compliance & reporting</span>
-              </div>
-            </div>
-            <div className="bg-[#F4F5F7] p-6 rounded-lg">
-              <div className="flex items-center space-x-2 mb-3">
-                <span className="text-[#C8A75B] text-2xl">✓</span>
-                <span className="text-[#0A1A2F]">Market analysis & advice</span>
-              </div>
-            </div>
+            ))}
           </div>
 
           {/* Expandable Sub-Services */}
           <div className="space-y-4">
-            {/* Rent Collection */}
-            <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <button
-                onClick={() => toggleSection('rent-collection')}
-                className="w-full flex items-center justify-between p-6 bg-white hover:bg-[#F4F5F7] transition-colors"
-              >
-                <div className="flex items-center space-x-4">
-                  <Wallet size={24} className="text-[#C8A75B]" />
-                  <h3 className="text-[#0A1A2F]">Rent Collection & Financial Management</h3>
+            {propertyManagement.subServices?.map((subService: any) => {
+              const IconComponent = subServiceIconMap[subService.icon] || Wallet;
+              return (
+                <div key={subService.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                  <button
+                    onClick={() => toggleSection(subService.id)}
+                    className="w-full flex items-center justify-between p-6 bg-white hover:bg-[#F4F5F7] transition-colors"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <IconComponent size={24} className="text-[#C8A75B]" />
+                      <h3 className="text-[#0A1A2F]">{subService.title}</h3>
+                    </div>
+                    {expandedSection === subService.id ? <ChevronUp /> : <ChevronDown />}
+                  </button>
+                  {expandedSection === subService.id && (
+                    <div className="p-6 bg-[#F4F5F7] border-t border-gray-200">
+                      <p className="text-gray-700 mb-4">
+                        {subService.description}
+                      </p>
+                      <ul className="space-y-2">
+                        {subService.features?.map((feature: string, index: number) => (
+                          <li key={index} className="flex items-start space-x-2">
+                            <span className="text-[#C8A75B] mt-1">•</span>
+                            <span className="text-gray-700">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
-                {expandedSection === 'rent-collection' ? <ChevronUp /> : <ChevronDown />}
-              </button>
-              {expandedSection === 'rent-collection' && (
-                <div className="p-6 bg-[#F4F5F7] border-t border-gray-200">
-                  <p className="text-gray-700 mb-4">
-                    We ensure timely rent collection and provide transparent financial reporting for your peace of mind.
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Automated monthly rent collection</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Detailed monthly financial statements</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Direct deposit to your international account</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Arrears management and recovery</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Online portal access to financial data</span>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            {/* Tax & Legal Compliance */}
-            <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <button
-                onClick={() => toggleSection('tax-compliance')}
-                className="w-full flex items-center justify-between p-6 bg-white hover:bg-[#F4F5F7] transition-colors"
-              >
-                <div className="flex items-center space-x-4">
-                  <FileCheck size={24} className="text-[#C8A75B]" />
-                  <h3 className="text-[#0A1A2F]">Tax & Legal Compliance</h3>
-                </div>
-                {expandedSection === 'tax-compliance' ? <ChevronUp /> : <ChevronDown />}
-              </button>
-              {expandedSection === 'tax-compliance' && (
-                <div className="p-6 bg-[#F4F5F7] border-t border-gray-200">
-                  <p className="text-gray-700 mb-4">
-                    Stay compliant with UK property laws and tax regulations while optimizing your tax position.
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Safety certificate management (Gas, EPC, EICR)</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Landlord licensing and registration</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Tenancy deposit protection</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Tax reporting and HMRC compliance</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Right to Rent checks</span>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            {/* Tenant Sourcing */}
-            <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <button
-                onClick={() => toggleSection('tenant-sourcing')}
-                className="w-full flex items-center justify-between p-6 bg-white hover:bg-[#F4F5F7] transition-colors"
-              >
-                <div className="flex items-center space-x-4">
-                  <Users size={24} className="text-[#C8A75B]" />
-                  <h3 className="text-[#0A1A2F]">Tenant Sourcing & Management</h3>
-                </div>
-                {expandedSection === 'tenant-sourcing' ? <ChevronUp /> : <ChevronDown />}
-              </button>
-              {expandedSection === 'tenant-sourcing' && (
-                <div className="p-6 bg-[#F4F5F7] border-t border-gray-200">
-                  <p className="text-gray-700 mb-4">
-                    Find and retain high-quality tenants through our rigorous screening and relationship management process.
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Professional property marketing</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Comprehensive tenant screening (credit, employment, references)</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Property viewings and tenant selection</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Tenancy agreement preparation</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Move-in inspections and inventory</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Ongoing tenant relationship management</span>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            {/* Short-Term Rentals */}
-            <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <button
-                onClick={() => toggleSection('short-term')}
-                className="w-full flex items-center justify-between p-6 bg-white hover:bg-[#F4F5F7] transition-colors"
-              >
-                <div className="flex items-center space-x-4">
-                  <Home size={24} className="text-[#C8A75B]" />
-                  <h3 className="text-[#0A1A2F]">Short-Term Rental Management</h3>
-                </div>
-                {expandedSection === 'short-term' ? <ChevronUp /> : <ChevronDown />}
-              </button>
-              {expandedSection === 'short-term' && (
-                <div className="p-6 bg-[#F4F5F7] border-t border-gray-200">
-                  <p className="text-gray-700 mb-4">
-                    Maximize returns with professional Airbnb and short-term rental management.
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Listing optimization on multiple platforms</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Dynamic pricing strategies</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Guest communication and support</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Professional cleaning and turnover</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Review management</span>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            {/* Maintenance */}
-            <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <button
-                onClick={() => toggleSection('maintenance')}
-                className="w-full flex items-center justify-between p-6 bg-white hover:bg-[#F4F5F7] transition-colors"
-              >
-                <div className="flex items-center space-x-4">
-                  <Wrench size={24} className="text-[#C8A75B]" />
-                  <h3 className="text-[#0A1A2F]">Property Maintenance & Repairs</h3>
-                </div>
-                {expandedSection === 'maintenance' ? <ChevronUp /> : <ChevronDown />}
-              </button>
-              {expandedSection === 'maintenance' && (
-                <div className="p-6 bg-[#F4F5F7] border-t border-gray-200">
-                  <p className="text-gray-700 mb-4">
-                    Keep your property in prime condition with proactive maintenance and rapid response repairs.
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">24/7 emergency maintenance hotline</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Network of vetted, reliable contractors</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Preventive maintenance programs</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Property inspections (quarterly/bi-annual)</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Cost-effective repair solutions</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Detailed repair reports with photos</span>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            {/* Market Analysis */}
-            <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <button
-                onClick={() => toggleSection('market-analysis')}
-                className="w-full flex items-center justify-between p-6 bg-white hover:bg-[#F4F5F7] transition-colors"
-              >
-                <div className="flex items-center space-x-4">
-                  <TrendingUp size={24} className="text-[#C8A75B]" />
-                  <h3 className="text-[#0A1A2F]">Market Analysis & Investment Advice</h3>
-                </div>
-                {expandedSection === 'market-analysis' ? <ChevronUp /> : <ChevronDown />}
-              </button>
-              {expandedSection === 'market-analysis' && (
-                <div className="p-6 bg-[#F4F5F7] border-t border-gray-200">
-                  <p className="text-gray-700 mb-4">
-                    Make informed decisions with expert market insights and investment guidance.
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Local market analysis and trends</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Rental yield optimization</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Property valuation services</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Portfolio growth strategies</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Investment opportunity identification</span>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            {/* Property Marketing */}
-            <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <button
-                onClick={() => toggleSection('marketing')}
-                className="w-full flex items-center justify-between p-6 bg-white hover:bg-[#F4F5F7] transition-colors"
-              >
-                <div className="flex items-center space-x-4">
-                  <Search size={24} className="text-[#C8A75B]" />
-                  <h3 className="text-[#0A1A2F]">Property Marketing</h3>
-                </div>
-                {expandedSection === 'marketing' ? <ChevronUp /> : <ChevronDown />}
-              </button>
-              {expandedSection === 'marketing' && (
-                <div className="p-6 bg-[#F4F5F7] border-t border-gray-200">
-                  <p className="text-gray-700 mb-4">
-                    Minimize void periods with professional property marketing and advertising.
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Professional photography and videography</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Listing on major property portals (Rightmove, Zoopla)</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Social media promotion</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Virtual tours and 3D walkthroughs</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Targeted advertising campaigns</span>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            {/* 24/7 Support */}
-            <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <button
-                onClick={() => toggleSection('support')}
-                className="w-full flex items-center justify-between p-6 bg-white hover:bg-[#F4F5F7] transition-colors"
-              >
-                <div className="flex items-center space-x-4">
-                  <Clock size={24} className="text-[#C8A75B]" />
-                  <h3 className="text-[#0A1A2F]">24/7 Dedicated Support</h3>
-                </div>
-                {expandedSection === 'support' ? <ChevronUp /> : <ChevronDown />}
-              </button>
-              {expandedSection === 'support' && (
-                <div className="p-6 bg-[#F4F5F7] border-t border-gray-200">
-                  <p className="text-gray-700 mb-4">
-                    Round-the-clock support for you and your tenants, wherever you are in the world.
-                  </p>
-                  <ul className="space-y-2">
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Dedicated account manager</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">24/7 emergency hotline</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Multi-language support</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Online owner portal access</span>
-                    </li>
-                    <li className="flex items-start space-x-2">
-                      <span className="text-[#C8A75B] mt-1">•</span>
-                      <span className="text-gray-700">Regular performance reviews</span>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
+              );
+            })}
           </div>
               </div>
 
@@ -501,133 +353,46 @@ export function ServicesPage({ onNavigate }: ServicesPageProps) {
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 mb-12">
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <BookOpen size={32} className="text-[#C8A75B] mb-4" />
-              <h4 className="text-[#0A1A2F] mb-3">Bookkeeping Services</h4>
-              <p className="text-gray-600 text-sm mb-4">
-                Accurate record-keeping of all property-related transactions and expenses.
-              </p>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">Income and expense tracking</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">Bank reconciliation</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">Financial reporting</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <UserCheck size={32} className="text-[#C8A75B] mb-4" />
-              <h4 className="text-[#0A1A2F] mb-3">Payroll Processing</h4>
-              <p className="text-gray-600 text-sm mb-4">
-                Efficient payroll management for property staff and contractors.
-              </p>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">Employee payment processing</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">PAYE and NI calculations</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">Pension auto-enrolment</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <BarChart size={32} className="text-[#C8A75B] mb-4" />
-              <h4 className="text-[#0A1A2F] mb-3">Accounts Preparation</h4>
-              <p className="text-gray-600 text-sm mb-4">
-                Year-end accounts preparation for tax filing and business planning.
-              </p>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">Annual financial statements</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">Management accounts</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">Budget forecasting</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <FileCheck size={32} className="text-[#C8A75B] mb-4" />
-              <h4 className="text-[#0A1A2F] mb-3">Tax Compliance</h4>
-              <p className="text-gray-600 text-sm mb-4">
-                Comprehensive tax support for UK property investors.
-              </p>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">Self-assessment tax returns</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">Corporation tax filing</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">VAT registration and returns</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <Briefcase size={32} className="text-[#C8A75B] mb-4" />
-              <h4 className="text-[#0A1A2F] mb-3">Business Start-up Support</h4>
-              <p className="text-gray-600 text-sm mb-4">
-                Guidance for launching and structuring your property business.
-              </p>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">Company formation</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">Business structure advice</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <span className="text-[#C8A75B]">•</span>
-                  <span className="text-gray-700">Registration services</span>
-                </li>
-              </ul>
-            </div>
+            {accounting.services?.map((service: any, index: number) => {
+              const IconComponent = accountingIconMap[service.icon] || BookOpen;
+              return (
+                <div key={index} className="bg-white p-8 rounded-lg shadow-md">
+                  <IconComponent size={32} className="text-[#C8A75B] mb-4" />
+                  <h4 className="text-[#0A1A2F] mb-3">{service.title}</h4>
+                  <p className="text-gray-600 text-sm mb-4">
+                    {service.description}
+                  </p>
+                  <ul className="space-y-2 text-sm">
+                    {service.features?.map((feature: string, featureIndex: number) => (
+                      <li key={featureIndex} className="flex items-start space-x-2">
+                        <span className="text-[#C8A75B]">•</span>
+                        <span className="text-gray-700">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
           </div>
 
                 {/* Pluto Consultancy CTA */}
-                <div className="bg-[#0A1A2F] p-8 rounded-lg text-center">
-                  <h3 className="text-white mb-4">Expert Accountancy & Tax Advice</h3>
-                  <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-                    For comprehensive accountancy and tax consultancy services, visit our specialist partner Pluto Consultancy.
-                  </p>
-                  <a
-                    href="https://plutoconsultancy.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center space-x-2 bg-[#C8A75B] text-white px-8 py-3 rounded-sm hover:bg-[#B39650] transition-colors"
-                  >
-                    <span>Visit Pluto Consultancy</span>
-                    <ExternalLink size={20} />
-                  </a>
-                </div>
+                {accounting.plutoCta && (
+                  <div className="bg-[#0A1A2F] p-8 rounded-lg text-center">
+                    <h3 className="text-white mb-4">{accounting.plutoCta.title}</h3>
+                    <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
+                      {accounting.plutoCta.description}
+                    </p>
+                    <a
+                      href={accounting.plutoCta.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-2 bg-[#C8A75B] text-white px-8 py-3 rounded-sm hover:bg-[#B39650] transition-colors"
+                    >
+                      <span>{accounting.plutoCta.buttonText}</span>
+                      <ExternalLink size={20} />
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </FadeIn>

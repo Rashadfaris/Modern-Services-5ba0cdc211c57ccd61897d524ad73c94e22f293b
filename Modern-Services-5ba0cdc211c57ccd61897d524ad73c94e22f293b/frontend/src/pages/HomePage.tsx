@@ -40,11 +40,59 @@ export function HomePage({ onNavigate }: HomePageProps) {
     },
     benefits: {
       title: "Why International Investors Choose Us",
-      description: "We provide comprehensive solutions that protect and grow your property investments in England."
+      description: "We provide comprehensive solutions that protect and grow your property investments in England.",
+      cards: [
+        {
+          icon: "Shield",
+          title: "Peace of Mind",
+          description: "Rest easy knowing your properties are in expert hands with 24/7 support and proactive management."
+        },
+        {
+          icon: "TrendingUp",
+          title: "Maximized Returns",
+          description: "Strategic rent optimization and cost-effective maintenance to enhance your investment performance."
+        },
+        {
+          icon: "Clock",
+          title: "Time Savings",
+          description: "We handle everything from tenant screening to maintenance, freeing you to focus on growing your portfolio."
+        },
+        {
+          icon: "FileCheck",
+          title: "Legal & Tax Compliance",
+          description: "Full UK regulatory compliance and expert tax guidance to protect your interests."
+        }
+      ]
     },
     services: {
       title: "Our Core Services",
-      description: "Comprehensive property and financial management solutions tailored for international investors."
+      description: "Comprehensive property and financial management solutions tailored for international investors.",
+      cards: [
+        {
+          icon: "Building2",
+          title: "Property Management",
+          description: "Full-service management from tenant sourcing to maintenance and compliance.",
+          features: ["Tenant Screening", "Rent Collection", "24/7 Support"]
+        },
+        {
+          icon: "Users",
+          title: "Tenant Services",
+          description: "Professional tenant sourcing, screening, and relationship management.",
+          features: ["Background Checks", "Contract Management", "Tenant Support"]
+        },
+        {
+          icon: "Wallet",
+          title: "Financial Management",
+          description: "Expert accounting, bookkeeping, and financial reporting services.",
+          features: ["Monthly Reports", "Tax Planning", "Payroll Services"]
+        },
+        {
+          icon: "Wrench",
+          title: "Maintenance & Repairs",
+          description: "Proactive maintenance and rapid response to keep properties in prime condition.",
+          features: ["24/7 Emergency", "Quality Contractors", "Cost Control"]
+        }
+      ]
     },
     testimonials: {
       title: "What Our Clients Say",
@@ -77,6 +125,28 @@ export function HomePage({ onNavigate }: HomePageProps) {
     const desc = content.about?.description1 || defaultContent.about.description1;
     return replaceYearsInText(desc);
   }, [content.about?.description1, defaultContent.about.description1, siteSettings?.yearsOfExperience]);
+
+  // Icon mapping for benefit cards
+  const iconMap: Record<string, typeof Shield> = {
+    Shield,
+    TrendingUp,
+    Clock,
+    FileCheck
+  };
+
+  // Icon mapping for service cards
+  const serviceIconMap: Record<string, typeof Building2> = {
+    Building2,
+    Users,
+    Wallet,
+    Wrench
+  };
+
+  // Get benefit cards from content or default
+  const benefitCards = content.benefits?.cards || defaultContent.benefits.cards;
+
+  // Get service cards from content or default
+  const serviceCards = content.services?.cards || defaultContent.services.cards;
 
   const testimonials = [
     {
@@ -182,26 +252,17 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            <BenefitCard
-              icon={Shield}
-              title="Peace of Mind"
-              description="Rest easy knowing your properties are in expert hands with 24/7 support and proactive management."
-            />
-            <BenefitCard
-              icon={TrendingUp}
-              title="Maximized Returns"
-              description="Strategic rent optimization and cost-effective maintenance to enhance your investment performance."
-            />
-            <BenefitCard
-              icon={Clock}
-              title="Time Savings"
-              description="We handle everything from tenant screening to maintenance, freeing you to focus on growing your portfolio."
-            />
-            <BenefitCard
-              icon={FileCheck}
-              title="Legal & Tax Compliance"
-              description="Full UK regulatory compliance and expert tax guidance to protect your interests."
-            />
+            {benefitCards?.map((card: any, index: number) => {
+              const IconComponent = iconMap[card.icon] || Shield;
+              return (
+                <BenefitCard
+                  key={index}
+                  icon={IconComponent}
+                  title={card.title}
+                  description={card.description}
+                />
+              );
+            })}
             </div>
           </FadeIn>
         </div>
@@ -218,34 +279,19 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            <ServiceCard
-              icon={Building2}
-              title="Property Management"
-              description="Full-service management from tenant sourcing to maintenance and compliance."
-              features={['Tenant Screening', 'Rent Collection', '24/7 Support']}
-              onLearnMore={() => onNavigate('services')}
-            />
-            <ServiceCard
-              icon={Users}
-              title="Tenant Services"
-              description="Professional tenant sourcing, screening, and relationship management."
-              features={['Background Checks', 'Contract Management', 'Tenant Support']}
-              onLearnMore={() => onNavigate('services')}
-            />
-            <ServiceCard
-              icon={Wallet}
-              title="Financial Management"
-              description="Expert accounting, bookkeeping, and financial reporting services."
-              features={['Monthly Reports', 'Tax Planning', 'Payroll Services']}
-              onLearnMore={() => onNavigate('services')}
-            />
-            <ServiceCard
-              icon={Wrench}
-              title="Maintenance & Repairs"
-              description="Proactive maintenance and rapid response to keep properties in prime condition."
-              features={['24/7 Emergency', 'Quality Contractors', 'Cost Control']}
-              onLearnMore={() => onNavigate('services')}
-            />
+            {serviceCards?.map((card: any, index: number) => {
+              const IconComponent = serviceIconMap[card.icon] || Building2;
+              return (
+                <ServiceCard
+                  key={index}
+                  icon={IconComponent}
+                  title={card.title}
+                  description={card.description}
+                  features={card.features || []}
+                  onLearnMore={() => onNavigate('services')}
+                />
+              );
+            })}
             </div>
             <div className="text-center mt-12">
               <Button onClick={() => onNavigate('services')}>

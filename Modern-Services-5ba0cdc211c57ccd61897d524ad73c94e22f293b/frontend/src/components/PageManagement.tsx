@@ -6,7 +6,7 @@ import {
   updatePage, 
   Page 
 } from '../lib/api';
-import { Edit, X, Save, Home, Info, Briefcase, Mail } from 'lucide-react';
+import { Edit, X, Save, Home, Info, Briefcase, Mail, MessageSquare } from 'lucide-react';
 import { FadeIn } from './FadeIn';
 
 interface PageManagementProps {
@@ -18,6 +18,7 @@ const PAGE_CONFIG = {
   about: { label: 'About', icon: Info },
   services: { label: 'Services', icon: Briefcase },
   contact: { label: 'Contact', icon: Mail },
+  testimonials: { label: 'Testimonials', icon: MessageSquare },
 };
 
 export function PageManagement({ onLogout: _onLogout }: PageManagementProps) {
@@ -50,7 +51,7 @@ export function PageManagement({ onLogout: _onLogout }: PageManagementProps) {
   };
 
   // Default content for each page (used when page doesn't exist in DB)
-  const getDefaultPageContent = (slug: 'home' | 'about' | 'services' | 'contact') => {
+  const getDefaultPageContent = (slug: 'home' | 'about' | 'services' | 'contact' | 'testimonials') => {
     const defaults: Record<string, any> = {
       home: {
         hero: {
@@ -67,11 +68,59 @@ export function PageManagement({ onLogout: _onLogout }: PageManagementProps) {
         },
         benefits: {
           title: "Why International Investors Choose Us",
-          description: "We provide comprehensive solutions that protect and grow your property investments in England."
+          description: "We provide comprehensive solutions that protect and grow your property investments in England.",
+          cards: [
+            {
+              icon: "Shield",
+              title: "Peace of Mind",
+              description: "Rest easy knowing your properties are in expert hands with 24/7 support and proactive management."
+            },
+            {
+              icon: "TrendingUp",
+              title: "Maximized Returns",
+              description: "Strategic rent optimization and cost-effective maintenance to enhance your investment performance."
+            },
+            {
+              icon: "Clock",
+              title: "Time Savings",
+              description: "We handle everything from tenant screening to maintenance, freeing you to focus on growing your portfolio."
+            },
+            {
+              icon: "FileCheck",
+              title: "Legal & Tax Compliance",
+              description: "Full UK regulatory compliance and expert tax guidance to protect your interests."
+            }
+          ]
         },
         services: {
           title: "Our Core Services",
-          description: "Comprehensive property and financial management solutions tailored for international investors."
+          description: "Comprehensive property and financial management solutions tailored for international investors.",
+          cards: [
+            {
+              icon: "Building2",
+              title: "Property Management",
+              description: "Full-service management from tenant sourcing to maintenance and compliance.",
+              features: ["Tenant Screening", "Rent Collection", "24/7 Support"]
+            },
+            {
+              icon: "Users",
+              title: "Tenant Services",
+              description: "Professional tenant sourcing, screening, and relationship management.",
+              features: ["Background Checks", "Contract Management", "Tenant Support"]
+            },
+            {
+              icon: "Wallet",
+              title: "Financial Management",
+              description: "Expert accounting, bookkeeping, and financial reporting services.",
+              features: ["Monthly Reports", "Tax Planning", "Payroll Services"]
+            },
+            {
+              icon: "Wrench",
+              title: "Maintenance & Repairs",
+              description: "Proactive maintenance and rapid response to keep properties in prime condition.",
+              features: ["24/7 Emergency", "Quality Contractors", "Cost Control"]
+            }
+          ]
         },
         testimonials: {
           title: "What Our Clients Say",
@@ -99,11 +148,70 @@ export function PageManagement({ onLogout: _onLogout }: PageManagementProps) {
         },
         values: {
           title: "Our Core Values",
-          description: "These principles guide every decision we make and every service we provide."
+          description: "These principles guide every decision we make and every service we provide.",
+          cards: [
+            {
+              icon: "Heart",
+              title: "Integrity",
+              description: "We operate with honesty and transparency in all our dealings, building trust through ethical practices."
+            },
+            {
+              icon: "Eye",
+              title: "Transparency",
+              description: "Clear, open communication and detailed reporting keep you informed every step of the way."
+            },
+            {
+              icon: "Users",
+              title: "Client-Centricity",
+              description: "Your success is our success. We tailor our services to meet your unique investment goals."
+            },
+            {
+              icon: "Lightbulb",
+              title: "Innovation",
+              description: "We embrace technology and modern practices to deliver superior service and results."
+            },
+            {
+              icon: "Award",
+              title: "Expertise",
+              description: "A decade of experience combined with continuous learning keeps us at the industry forefront."
+            }
+          ]
         },
         whyChoose: {
           title: "Why Choose Modern Services?",
-          description: "We offer a unique combination of expertise, technology, and personalized service that sets us apart."
+          description: "We offer a unique combination of expertise, technology, and personalized service that sets us apart.",
+          cards: [
+            {
+              icon: "Target",
+              title: "Specialized Expertise",
+              description: "Deep knowledge of UK property laws, regulations, and market dynamics specifically for international investors."
+            },
+            {
+              icon: "Shield",
+              title: "Comprehensive Solutions",
+              description: "From property management to accounting and tax compliance, we handle all aspects of your investment."
+            },
+            {
+              icon: "BarChart",
+              title: "Transparent Reporting",
+              description: "Detailed monthly reports and real-time access to your property's financial performance through our online portal."
+            },
+            {
+              icon: "UserCheck",
+              title: "Dedicated Account Management",
+              description: "Your personal account manager knows your portfolio inside out and is always available to assist."
+            },
+            {
+              icon: "Calculator",
+              title: "Integrated Tax & Financial Support",
+              description: "Expert accounting services and tax planning through our partnership with Pluto Consultancy."
+            },
+            {
+              icon: "Laptop",
+              title: "Advanced Technology",
+              description: "State-of-the-art property management software and online portal for 24/7 access to your investment data."
+            }
+          ]
         },
         mission: {
           title: "Our Mission",
@@ -131,11 +239,185 @@ export function PageManagement({ onLogout: _onLogout }: PageManagementProps) {
         },
         propertyManagement: {
           title: "Comprehensive Property Management",
-          description: "Full-service property management designed specifically for international investors. We handle every aspect of your property investment, allowing you to enjoy passive income with complete peace of mind."
+          description: "Full-service property management designed specifically for international investors. We handle every aspect of your property investment, allowing you to enjoy passive income with complete peace of mind.",
+          quickFeatures: [
+            "Professional tenant screening",
+            "24/7 emergency support",
+            "Rent collection & management",
+            "Property maintenance & repairs",
+            "Legal compliance & reporting",
+            "Market analysis & advice"
+          ],
+          subServices: [
+            {
+              id: "rent-collection",
+              icon: "Wallet",
+              title: "Rent Collection & Financial Management",
+              description: "We ensure timely rent collection and provide transparent financial reporting for your peace of mind.",
+              features: [
+                "Automated monthly rent collection",
+                "Detailed monthly financial statements",
+                "Direct deposit to your international account",
+                "Arrears management and recovery",
+                "Online portal access to financial data"
+              ]
+            },
+            {
+              id: "tax-compliance",
+              icon: "FileCheck",
+              title: "Tax & Legal Compliance",
+              description: "Stay compliant with UK property laws and tax regulations while optimizing your tax position.",
+              features: [
+                "Safety certificate management (Gas, EPC, EICR)",
+                "Landlord licensing and registration",
+                "Tenancy deposit protection",
+                "Tax reporting and HMRC compliance",
+                "Right to Rent checks"
+              ]
+            },
+            {
+              id: "tenant-sourcing",
+              icon: "Users",
+              title: "Tenant Sourcing & Management",
+              description: "Find and retain high-quality tenants through our rigorous screening and relationship management process.",
+              features: [
+                "Professional property marketing",
+                "Comprehensive tenant screening (credit, employment, references)",
+                "Property viewings and tenant selection",
+                "Tenancy agreement preparation",
+                "Move-in inspections and inventory",
+                "Ongoing tenant relationship management"
+              ]
+            },
+            {
+              id: "short-term",
+              icon: "Home",
+              title: "Short-Term Rental Management",
+              description: "Maximize returns with professional Airbnb and short-term rental management.",
+              features: [
+                "Listing optimization on multiple platforms",
+                "Dynamic pricing strategies",
+                "Guest communication and support",
+                "Professional cleaning and turnover",
+                "Review management"
+              ]
+            },
+            {
+              id: "maintenance",
+              icon: "Wrench",
+              title: "Property Maintenance & Repairs",
+              description: "Keep your property in prime condition with proactive maintenance and rapid response repairs.",
+              features: [
+                "24/7 emergency maintenance hotline",
+                "Network of vetted, reliable contractors",
+                "Preventive maintenance programs",
+                "Property inspections (quarterly/bi-annual)",
+                "Cost-effective repair solutions",
+                "Detailed repair reports with photos"
+              ]
+            },
+            {
+              id: "market-analysis",
+              icon: "TrendingUp",
+              title: "Market Analysis & Investment Advice",
+              description: "Make informed decisions with expert market insights and investment guidance.",
+              features: [
+                "Local market analysis and trends",
+                "Rental yield optimization",
+                "Property valuation services",
+                "Portfolio growth strategies",
+                "Investment opportunity identification"
+              ]
+            },
+            {
+              id: "marketing",
+              icon: "Search",
+              title: "Property Marketing",
+              description: "Minimize void periods with professional property marketing and advertising.",
+              features: [
+                "Professional photography and videography",
+                "Listing on major property portals (Rightmove, Zoopla)",
+                "Social media promotion",
+                "Virtual tours and 3D walkthroughs",
+                "Targeted advertising campaigns"
+              ]
+            },
+            {
+              id: "support",
+              icon: "Clock",
+              title: "24/7 Dedicated Support",
+              description: "Round-the-clock support for you and your tenants, wherever you are in the world.",
+              features: [
+                "Dedicated account manager",
+                "24/7 emergency hotline",
+                "Multi-language support",
+                "Online owner portal access",
+                "Regular performance reviews"
+              ]
+            }
+          ]
         },
         accounting: {
           title: "Accounting Services",
-          description: "Professional accounting and financial services to keep your property business compliant and profitable."
+          description: "Professional accounting and financial services to keep your property business compliant and profitable.",
+          services: [
+            {
+              icon: "BookOpen",
+              title: "Bookkeeping Services",
+              description: "Accurate record-keeping of all property-related transactions and expenses.",
+              features: [
+                "Income and expense tracking",
+                "Bank reconciliation",
+                "Financial reporting"
+              ]
+            },
+            {
+              icon: "UserCheck",
+              title: "Payroll Processing",
+              description: "Efficient payroll management for property staff and contractors.",
+              features: [
+                "Employee payment processing",
+                "PAYE and NI calculations",
+                "Pension auto-enrolment"
+              ]
+            },
+            {
+              icon: "BarChart",
+              title: "Accounts Preparation",
+              description: "Year-end accounts preparation for tax filing and business planning.",
+              features: [
+                "Annual financial statements",
+                "Management accounts",
+                "Budget forecasting"
+              ]
+            },
+            {
+              icon: "FileCheck",
+              title: "Tax Compliance",
+              description: "Comprehensive tax support for UK property investors.",
+              features: [
+                "Self-assessment tax returns",
+                "Corporation tax filing",
+                "VAT registration and returns"
+              ]
+            },
+            {
+              icon: "Briefcase",
+              title: "Business Start-up Support",
+              description: "Guidance for launching and structuring your property business.",
+              features: [
+                "Company formation",
+                "Business structure advice",
+                "Registration services"
+              ]
+            }
+          ],
+          plutoCta: {
+            title: "Expert Accountancy & Tax Advice",
+            description: "For comprehensive accountancy and tax consultancy services, visit our specialist partner Pluto Consultancy.",
+            buttonText: "Visit Pluto Consultancy",
+            url: "https://plutoconsultancy.com"
+          }
         },
         cta: {
           title: "Let's Discuss Your Property Needs",
@@ -154,14 +436,30 @@ export function PageManagement({ onLogout: _onLogout }: PageManagementProps) {
         contactInfo: {
           title: "Contact Information",
           description: "Reach out to us through any of the following channels. We're here to help!",
-          phone: "+44 20 8058 7635",
-          email: "info@modernservices.org.uk",
-          companyReg: "Company Registration No: OC407556",
+          phones: [
+            {
+              number: "+44 20 8058 7635",
+              note: "International rates may apply"
+            }
+          ],
+          emails: [
+            {
+              address: "info@modernservices.org.uk",
+              note: "We respond within 24 hours"
+            }
+          ],
+          companyRegs: [
+            {
+              label: "Company Registration",
+              number: "OC407556"
+            }
+          ],
           hours: {
             weekdays: "Monday - Friday: 9:00 AM - 6:00 PM GMT",
             saturday: "Saturday: 10:00 AM - 2:00 PM GMT",
             sunday: "Sunday: Closed"
-          }
+          },
+          emergencySupport: "24/7 Emergency Support Available"
         },
         visit: {
           title: "Visit Our Office",
@@ -169,18 +467,39 @@ export function PageManagement({ onLogout: _onLogout }: PageManagementProps) {
         },
         faq: {
           title: "Have Questions?",
-          description: "Here are some quick answers to common questions. For more detailed information, please contact us directly."
+          description: "Here are some quick answers to common questions. For more detailed information, please contact us directly.",
+          questions: [
+            {
+              question: "How quickly can you start managing my property?",
+              answer: "We can typically onboard new properties within 5-7 business days after our initial consultation and agreement."
+            },
+            {
+              question: "Do you manage properties outside London?",
+              answer: "Yes, we manage properties throughout England, including Manchester, Birmingham, Leeds, and other major cities."
+            },
+            {
+              question: "What are your management fees?",
+              answer: "Our fees are competitive and transparent, varying based on property type and services required. Contact us for a personalized quote."
+            }
+          ]
         },
         cta: {
           title: "Ready to Get Started?",
           description: "Join hundreds of satisfied international investors who trust Modern Services with their UK property investments."
+        }
+      },
+      testimonials: {
+        countries: {
+          title: "Serving Investors Globally",
+          description: "We proudly serve property investors from around the world who trust us with their UK investments.",
+          countriesList: ['UAE', 'USA', 'Saudi', 'Spain', 'France', 'Germany', 'Australia', 'Japan', 'India', 'Qatar', 'Mexico', 'Ireland']
         }
       }
     };
     return defaults[slug] || {};
   };
 
-  const handleEdit = (page: Page | null, slug: 'home' | 'about' | 'services' | 'contact') => {
+  const handleEdit = (page: Page | null, slug: 'home' | 'about' | 'services' | 'contact' | 'testimonials') => {
     if (page) {
       // Edit existing page
       setEditingPage(page);
@@ -374,7 +693,7 @@ export function PageManagement({ onLogout: _onLogout }: PageManagementProps) {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {(['home', 'about', 'services', 'contact'] as const).map((slug) => {
+              {(['home', 'about', 'services', 'contact', 'testimonials'] as const).map((slug) => {
                 const page = getPageBySlug(slug);
                 const Icon = PAGE_CONFIG[slug].icon;
                 

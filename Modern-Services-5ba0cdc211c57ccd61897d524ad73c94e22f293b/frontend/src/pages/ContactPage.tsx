@@ -26,14 +26,30 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
     contactInfo: {
       title: "Contact Information",
       description: "Reach out to us through any of the following channels. We're here to help!",
-      phone: "+44 20 8058 7635",
-      email: "info@modernservices.org.uk",
-      companyReg: "Company Registration No: OC407556",
+      phones: [
+        {
+          number: "+44 20 8058 7635",
+          note: "International rates may apply"
+        }
+      ],
+      emails: [
+        {
+          address: "info@modernservices.org.uk",
+          note: "We respond within 24 hours"
+        }
+      ],
+      companyRegs: [
+        {
+          label: "Company Registration",
+          number: "OC407556"
+        }
+      ],
       hours: {
         weekdays: "Monday - Friday: 9:00 AM - 6:00 PM GMT",
         saturday: "Saturday: 10:00 AM - 2:00 PM GMT",
         sunday: "Sunday: Closed"
-      }
+      },
+      emergencySupport: "24/7 Emergency Support Available"
     },
     visit: {
       title: "Visit Our Office",
@@ -41,7 +57,21 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
     },
     faq: {
       title: "Have Questions?",
-      description: "Here are some quick answers to common questions. For more detailed information, please contact us directly."
+      description: "Here are some quick answers to common questions. For more detailed information, please contact us directly.",
+      questions: [
+        {
+          question: "How quickly can you start managing my property?",
+          answer: "We can typically onboard new properties within 5-7 business days after our initial consultation and agreement."
+        },
+        {
+          question: "Do you manage properties outside London?",
+          answer: "Yes, we manage properties throughout England, including Manchester, Birmingham, Leeds, and other major cities."
+        },
+        {
+          question: "What are your management fees?",
+          answer: "Our fees are competitive and transparent, varying based on property type and services required. Contact us for a personalized quote."
+        }
+      ]
     },
     cta: {
       title: "Ready to Get Started?",
@@ -219,40 +249,50 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
               </p>
 
               <div className="space-y-6 mb-12">
-                {/* Phone */}
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-[#F4F5F7] rounded-full flex items-center justify-center flex-shrink-0">
-                    <Phone size={24} className="text-[#C8A75B]" />
+                {/* Phones */}
+                {(content.contactInfo?.phones || defaultContent.contactInfo.phones)?.map((phoneItem: any, index: number) => (
+                  <div key={index} className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-[#F4F5F7] rounded-full flex items-center justify-center flex-shrink-0">
+                      <Phone size={24} className="text-[#C8A75B]" />
+                    </div>
+                    <div>
+                      <h4 className="text-[#0A1A2F] mb-2">Phone{content.contactInfo?.phones?.length > 1 || defaultContent.contactInfo.phones.length > 1 ? ` ${index + 1}` : ''}</h4>
+                      <p className="text-gray-600">{phoneItem.number}</p>
+                      {phoneItem.note && (
+                        <p className="text-sm text-gray-500 mt-1">{phoneItem.note}</p>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-[#0A1A2F] mb-2">Phone</h4>
-                    <p className="text-gray-600">{content.contactInfo?.phone || defaultContent.contactInfo.phone}</p>
-                    <p className="text-sm text-gray-500 mt-1">International rates may apply</p>
-                  </div>
-                </div>
+                ))}
 
-                {/* Email */}
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-[#F4F5F7] rounded-full flex items-center justify-center flex-shrink-0">
-                    <Mail size={24} className="text-[#C8A75B]" />
+                {/* Emails */}
+                {(content.contactInfo?.emails || defaultContent.contactInfo.emails)?.map((emailItem: any, index: number) => (
+                  <div key={index} className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-[#F4F5F7] rounded-full flex items-center justify-center flex-shrink-0">
+                      <Mail size={24} className="text-[#C8A75B]" />
+                    </div>
+                    <div>
+                      <h4 className="text-[#0A1A2F] mb-2">Email{content.contactInfo?.emails?.length > 1 || defaultContent.contactInfo.emails.length > 1 ? ` ${index + 1}` : ''}</h4>
+                      <p className="text-gray-600">{emailItem.address}</p>
+                      {emailItem.note && (
+                        <p className="text-sm text-gray-500 mt-1">{emailItem.note}</p>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-[#0A1A2F] mb-2">Email</h4>
-                    <p className="text-gray-600">{content.contactInfo?.email || defaultContent.contactInfo.email}</p>
-                    <p className="text-sm text-gray-500 mt-1">We respond within 24 hours</p>
-                  </div>
-                </div>
+                ))}
 
-                {/* Company Registration */}
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-[#F4F5F7] rounded-full flex items-center justify-center flex-shrink-0">
-                    <FileText size={24} className="text-[#C8A75B]" />
+                {/* Company Registrations */}
+                {(content.contactInfo?.companyRegs || defaultContent.contactInfo.companyRegs)?.map((regItem: any, index: number) => (
+                  <div key={index} className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-[#F4F5F7] rounded-full flex items-center justify-center flex-shrink-0">
+                      <FileText size={24} className="text-[#C8A75B]" />
+                    </div>
+                    <div>
+                      <h4 className="text-[#0A1A2F] mb-2">{regItem.label || "Company Registration"}</h4>
+                      <p className="text-gray-600">Company Registration No: {regItem.number}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-[#0A1A2F] mb-2">Company Registration</h4>
-                    <p className="text-gray-600">{content.contactInfo?.companyReg || defaultContent.contactInfo.companyReg}</p>
-                  </div>
-                </div>
+                ))}
 
                 {/* Hours */}
                 <div className="flex items-start space-x-4">
@@ -264,7 +304,7 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
                     <p className="text-gray-600">{content.contactInfo?.hours?.weekdays || defaultContent.contactInfo.hours.weekdays}</p>
                     <p className="text-gray-600">{content.contactInfo?.hours?.saturday || defaultContent.contactInfo.hours.saturday}</p>
                     <p className="text-gray-600">{content.contactInfo?.hours?.sunday || defaultContent.contactInfo.hours.sunday}</p>
-                    <p className="text-sm text-[#C8A75B] mt-1">24/7 Emergency Support Available</p>
+                    <p className="text-sm text-[#C8A75B] mt-1">{content.contactInfo?.emergencySupport || defaultContent.contactInfo.emergencySupport}</p>
                   </div>
                 </div>
               </div>
@@ -345,26 +385,14 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-[#F4F5F7] p-6 rounded-lg">
-              <h4 className="text-[#0A1A2F] mb-3">How quickly can you start managing my property?</h4>
-              <p className="text-gray-600 text-sm">
-                We can typically onboard new properties within 5-7 business days after our initial consultation and agreement.
-              </p>
-            </div>
-
-            <div className="bg-[#F4F5F7] p-6 rounded-lg">
-              <h4 className="text-[#0A1A2F] mb-3">Do you manage properties outside London?</h4>
-              <p className="text-gray-600 text-sm">
-                Yes, we manage properties throughout England, including Manchester, Birmingham, Leeds, and other major cities.
-              </p>
-            </div>
-
-            <div className="bg-[#F4F5F7] p-6 rounded-lg">
-              <h4 className="text-[#0A1A2F] mb-3">What are your management fees?</h4>
-              <p className="text-gray-600 text-sm">
-                Our fees are competitive and transparent, varying based on property type and services required. Contact us for a personalized quote.
-              </p>
-            </div>
+            {(content.faq?.questions || defaultContent.faq.questions)?.map((faqItem: any, index: number) => (
+              <div key={index} className="bg-[#F4F5F7] p-6 rounded-lg">
+                <h4 className="text-[#0A1A2F] mb-3">{faqItem.question}</h4>
+                <p className="text-gray-600 text-sm">
+                  {faqItem.answer}
+                </p>
+              </div>
+            ))}
             </div>
           </FadeIn>
         </div>
