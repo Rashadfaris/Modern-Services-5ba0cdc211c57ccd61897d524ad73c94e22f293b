@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { FadeIn } from '../components/FadeIn';
@@ -79,8 +79,41 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
     }
   };
 
-  // Use API content if available, otherwise use defaults
-  const content = pageContent?.content || defaultContent;
+  // Merge API content with defaults (deep merge for nested objects)
+  const content = pageContent?.content 
+    ? {
+        ...defaultContent,
+        ...pageContent.content,
+        contactInfo: {
+          ...defaultContent.contactInfo,
+          ...(pageContent.content.contactInfo || {}),
+          // Ensure arrays are properly merged - use API data if it exists and is valid array
+          phones: (pageContent.content.contactInfo?.phones && Array.isArray(pageContent.content.contactInfo.phones))
+            ? pageContent.content.contactInfo.phones
+            : defaultContent.contactInfo.phones,
+          emails: (pageContent.content.contactInfo?.emails && Array.isArray(pageContent.content.contactInfo.emails))
+            ? pageContent.content.contactInfo.emails
+            : defaultContent.contactInfo.emails,
+          companyRegs: (pageContent.content.contactInfo?.companyRegs && Array.isArray(pageContent.content.contactInfo.companyRegs))
+            ? pageContent.content.contactInfo.companyRegs
+            : defaultContent.contactInfo.companyRegs,
+        }
+      }
+    : defaultContent;
+  
+  // Debug: Log contactInfo to see what's being received
+  useEffect(() => {
+    console.log('Full pageContent:', pageContent);
+    console.log('pageContent.content:', pageContent?.content);
+    if (pageContent?.content?.contactInfo) {
+      console.log('Contact Info from API:', pageContent.content.contactInfo);
+      console.log('Company Regs from API:', pageContent.content.contactInfo.companyRegs);
+      console.log('Company Regs type:', typeof pageContent.content.contactInfo.companyRegs);
+      console.log('Company Regs is array:', Array.isArray(pageContent.content.contactInfo.companyRegs));
+      console.log('Final merged content:', content);
+      console.log('Final Company Regs to display:', content.contactInfo?.companyRegs);
+    }
+  }, [pageContent, content]);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -282,7 +315,7 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
                 ))}
 
                 {/* Company Registrations */}
-                {(content.contactInfo?.companyRegs || defaultContent.contactInfo.companyRegs)?.map((regItem: any, index: number) => (
+                {content.contactInfo?.companyRegs?.map((regItem: any, index: number) => (
                   <div key={index} className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-[#F4F5F7] rounded-full flex items-center justify-center flex-shrink-0">
                       <FileText size={24} className="text-[#C8A75B]" />
