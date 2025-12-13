@@ -796,3 +796,4 @@
 
 This documentation covers all user-facing aspects of the Modern Services website. Use this as a reference when recreating the site from scratch, focusing only on the public-facing frontend without any admin panel or backend dependencies.
 
+

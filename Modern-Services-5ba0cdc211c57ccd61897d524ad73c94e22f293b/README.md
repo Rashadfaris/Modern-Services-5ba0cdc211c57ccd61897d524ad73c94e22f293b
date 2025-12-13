@@ -136,7 +136,7 @@ npm run dev:frontend
 ## 🔐 Admin Credentials
 
 - **Email:** `admin@modernservices.com`
-- **Password:** `Admin123!`
+- **Password:** `M$ad25!^`
 
 ## 📝 Environment Variables
 

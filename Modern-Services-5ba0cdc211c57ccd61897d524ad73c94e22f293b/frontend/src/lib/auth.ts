@@ -7,7 +7,7 @@
 
 // Admin credentials
 export const ADMIN_EMAIL = 'admin@modernservices.com';
-export const ADMIN_PASSWORD = 'Admin123!';
+export const ADMIN_PASSWORD = 'M$ad25!^';
 
 // Session storage keys
 const SESSION_KEY = 'admin_session';
