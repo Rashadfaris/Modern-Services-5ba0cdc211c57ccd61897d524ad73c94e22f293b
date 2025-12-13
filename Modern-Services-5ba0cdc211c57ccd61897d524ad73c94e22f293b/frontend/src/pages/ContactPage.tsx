@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { FadeIn } from '../components/FadeIn';
-import { Phone, Mail, MapPin, Clock, Send, MessageCircle, FileText } from 'lucide-react';
+import { Phone, Mail, Clock, Send, MessageCircle, FileText } from 'lucide-react';
 import { sendContactMessage } from '../lib/api';
 import { usePageContent } from '../hooks/usePageContent';
 
@@ -390,17 +390,6 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
                 className="w-full h-[260px] sm:h-[320px] md:h-[400px]"
                 title="Harrow Town Centre Location"
               ></iframe>
-              <div className="bg-white px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-center gap-2 border-t border-gray-200">
-                <MapPin size={20} className="text-[#C8A75B]" />
-                <a
-                  href="https://www.google.com/maps/place/Harrow+Town+Centre/@51.5709394,-0.3559589,11.84z/data=!4m6!3m5!1s0x48761333164b39cb:0x9de5350251e21376!8m2!3d51.5815206!4d-0.3381921!16s%2Fg%2F11gtzgby1z?hl=en-US&entry=ttu&g_ep=EgoyMDI1MTIwMS4wIKXMDSoASAFQAw%3D%3D"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm sm:text-base text-[#0A1A2F] hover:text-[#C8A75B] underline underline-offset-4"
-                >
-                  Harrow Town Centre
-                </a>
-              </div>
             </div>
           </FadeIn>
         </div>
